@@ -1,0 +1,249 @@
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList
+@model Group2_SE1814_NET.ViewModels.BlogViewModel
+@{
+    ViewData["Title"] = "Blog Page";
+}
+<style>
+    .blog_right_sidebar .post_category_widget .cat-list li.active {
+        border-color: #384aeb;
+    }
+
+    .blog_right_sidebar .post_category_widget .cat-list li.active a {
+        color: #384aeb;
+    }
+
+    .blog_right_sidebar .tag_cloud_widget ul li a.active {
+        background: #384aeb;
+        color: #fff;
+    }
+</style>
+ <!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="blog">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Our Blog</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="~/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Blog</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ end banner area ================= -->
+<!--================Blog Categorie Area =================-->
+<section class="blog_categorie_area">
+    
+</section>
+<!--================Blog Categorie Area =================-->
+<!--================Blog Area =================-->
+<section class="blog_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="blog_left_sidebar">
+                    @foreach (var blog in Model.Blogs)
+                    {
+                        <article class="row blog_item">
+                            <div class="col-md-3">
+                                <div class="blog_info text-right">
+                                    <div class="post_tag">
+                                        Category: <a class="active" href="~/#">@blog.Category.Name</a>
+                                    </div>
+                                    <ul class="blog_meta list">
+                                        <li>
+                                            <a href="~/#">
+                                                @blog.User.Fullname
+                                                <i class="lnr lnr-user"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="~/#">
+                                                <p>@blog.PublishDate.ToString("dd MMM, yyyy")</p>
+                                                <i class="lnr lnr-calendar-full"></i>
+                                            </a>
+                                        </li>
+                                       @*  <li>
+                                            <a href="~/#">
+                                                1.2M Views
+                                                <i class="lnr lnr-eye"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="~/#">
+                                                06 Comments
+                                                <i class="lnr lnr-bubble"></i>
+                                            </a>
+                                        </li> *@
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="blog_post">
+                                    <img src="~/@blog.Thumbnail" alt="" style="width: 100%;height: 300px;">
+                                    <div class="blog_details">
+                                        <a href="@Url.Action("Detail", "Blog", new { id = blog.Id })">
+                                            <h2>@blog.Title</h2>
+                                        </a>
+                                        <p>
+                                            @blog.ShortContent
+                                        </p>
+                                        <a class="button button-blog" href="@Url.Action("Detail", "Blog", new { id = blog.Id })">View More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                   
+
+                    <!-- Phân trang -->
+                    <nav class="blog-pagination justify-content-center d-flex">
+                        <ul class="pagination">
+                            <!-- Previous Button -->
+                            <li class="page-item @(Model.Blogs.HasPreviousPage ? "" : "disabled")">
+                                <a href="@Url.Action("Index", new { page = Model.Blogs.PageNumber - 1, search = Model.Search, categoryId = Model.CategoryId })"
+                                   class="page-link" aria-label="Previous">
+                                    <span aria-hidden="true">
+                                        <span class="lnr lnr-chevron-left"></span>
+                                    </span>
+                                </a>
+                            </li>
+
+                            <!-- Page Number Links -->
+                            @for (int i = 1; i <= Model.Blogs.PageCount; i++)
+                            {
+                                <li class="page-item @(i == Model.Blogs.PageNumber ? "active" : "")">
+                                    <a href="@Url.Action("Index", new { page = i, search = Model.Search, categoryId = Model.CategoryId })" class="page-link">@i</a>
+                                </li>
+                            }
+
+                            <!-- Next Button -->
+                            <li class="page-item @(Model.Blogs.HasNextPage ? "" : "disabled")">
+                                <a href="@Url.Action("Index", new { page = Model.Blogs.PageNumber + 1, search = Model.Search, categoryId = Model.CategoryId })"
+                                   class="page-link" aria-label="Next">
+                                    <span aria-hidden="true">
+                                        <span class="lnr lnr-chevron-right"></span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar">
+                    <aside class="single_sidebar_widget search_widget">
+                        <form method="get" action="@Url.Action("Index", "Blog")">
+                        <div class="input-group">
+                            <!-- Truyền giá trị categoryId hiện tại dưới dạng hidden input -->
+                            @if (Model.CategoryId != null)
+                            {
+                                 <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                            }
+                            <input type="text" class="form-control" placeholder="Search Posts" value="@Model.Search" name="search">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">
+                                    <i class="lnr lnr-magnifier"></i>
+                                </button>
+                            </span>
+                            
+                        </div>
+                        </form>
+                        <!-- /input-group -->
+                        <div class="br"></div>
+                    </aside>
+                    <aside class="single_sidebar_widget post_category_widget">
+                        <h4 class="widget_title">Blog Catgories</h4>
+                        <ul class="list cat-list">
+                             @foreach (var category in Model.Categories){
+                                string activeClass = category.Id == Model.CategoryId ? "active" : string.Empty;
+                                <li class="@activeClass">
+                                    <a href="@Url.Action("Index", new { categoryId = category.Id, search = Model.Search })" class="d-flex justify-content-between">
+                                        <p>@category.Name</p>
+                                        <p>@category.Posts.Count</p>
+                                    </a>
+                            </li>
+                            }
+                            
+                        </ul>
+                        <div class="br"></div>
+                    </aside>
+                    <aside class="single_sidebar_widget popular_post_widget">
+                        <h3 class="widget_title">Newest Blogs</h3>
+                        @foreach (var blog in Model.Top4)
+                        {
+                            <div class="media post_item">
+                                <img src="~/@blog.Thumbnail" alt="post" style="width:100px; height:60px">
+                                <div class="media-body">
+                                    <a href="@Url.Action("Detail", "Blog", new { id = blog.Id })">
+                                        <h3>@blog.Title</h3>
+                                    </a>
+                                    <p>@blog.PublishDate.ToString("dd MMM, yyyy")</p>
+                                </div>
+                            </div>
+                        }
+                        <div class="br"></div>
+                    </aside>
+    
+                   
+                    
+<aside class="single-sidebar-widget newsletter_widget">
+                        <h4 class="widget_title">Newsletter</h4>
+                        <p>
+                            Here, I focus on a range of items and features that we use in life without giving them a second thought.
+                        </p>
+                        <div class="form-group d-flex flex-row">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Enter email address" onfocus="this.placeholder = ''"
+                                       onblur="this.placeholder = 'Enter email'">
+                            </div>
+                            <a href="~/#" class="bbtns">Subcribe</a>
+                        </div>
+                        <p class="text-bottom">You can unsubscribe at any time</p>
+                        <div class="br"></div>
+                    </aside>
+                    <aside class="single-sidebar-widget tag_cloud_widget">
+                        <h4 class="widget_title">Tag Clouds</h4>
+                        <ul class="list">
+                            @foreach (var category in Model.Categories)
+                            {
+                                string activeClass = category.Id == Model.CategoryId ? "active" : string.Empty;
+                                <li>
+                                    <a href="@Url.Action("Index", new { categoryId = category.Id, search = Model.Search })" class="@activeClass">@category.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================Blog Area =================-->
+<!--================Instagram Area =================-->
+<section class="instagram_area">
+    <div class="container box_1620">
+        <div class="insta_btn">
+            <a class="btn theme_btn" href="~/#">Follow us on instagram</a>
+        </div>
+        <div class="instagram_image row m0">
+            <a href="~/#"><img src="~/img/instagram/ins-1.jpg" alt=""></a>
+            <a href="~/#"><img src="~/img/instagram/ins-2.jpg" alt=""></a>
+            <a href="~/#"><img src="~/img/instagram/ins-3.jpg" alt=""></a>
+            <a href="~/#"><img src="~/img/instagram/ins-4.jpg" alt=""></a>
+            <a href="~/#"><img src="~/img/instagram/ins-5.jpg" alt=""></a>
+            <a href="~/#"><img src="~/img/instagram/ins-6.jpg" alt=""></a>
+        </div>
+    </div>
+</section>
+<!--================End Instagram Area =================-->

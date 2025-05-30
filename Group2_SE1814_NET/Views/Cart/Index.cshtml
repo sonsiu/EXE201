@@ -1,0 +1,120 @@
+﻿ @model IEnumerable<Group2_SE1814_NET.ViewModels.Item>
+@{
+    ViewData["Title"] = "Cart Page";
+}
+<!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Shopping Cart</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ end banner area ================= -->
+<!--================Cart Area =================-->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+											{
+                        <tr>
+                            <td>
+                                <div class="media">
+                                    <div class="d-flex">
+                                            <img src="@item.Product.ImageUrl" alt="@item.Product.Name" style="width:150px;">
+                                    </div>
+                                    <div class="media-body">
+                                            <p>@item.Product.Name</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                    <h5>$@item.Product.Price</h5>
+                            </td>
+                            <td>
+                                <div class="product_count">
+                                        <input type="text" name="qty" id="sst" maxlength="12" value="@item.Quantity" title="Quantity:"
+                                           class="input-text qty" readonly>
+                                        <button onclick ="window.location.href='@Url.Action("Add", "Cart", new { id = @item.Product.Id})'; return false;"
+                                            class="increase items-count" type="button">
+                                        <i class="lnr lnr-chevron-up"></i>
+                                    </button>
+                                        <button onclick="window.location.href='@Url.Action("Sub", "Cart", new { id = @item.Product.Id})'; return false;"
+                                            class="reduced items-count" type="button">
+                                        <i class="lnr lnr-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                    <h5>$@String.Format("{0:0.00}", item.Product.Price * item.Quantity)</h5>
+                            </td>
+                                <td>
+                                    <a onclick="window.location.href='@Url.Action("Remove", "Cart", new { id = @item.Product.Id})'; return false;"
+                                            class="reduced items-count" type="button">
+                                        <i class="lnr lnr-trash" style="font-size:20px;cursor:pointer"></i>
+                                    </a>
+                                </td>
+                        </tr>
+                        }
+
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                <h5>Subtotal</h5>
+                            </td>
+                            <td>
+                                @{
+                                    var total = Model.Sum(x => x.Quantity * x.Product.Price);
+                                }
+                                <h5>$@String.Format("{0:0.00}", total)</h5>
+                            </td>
+                           
+                        </tr>
+                        <tr class="out_button_area">
+                            <td class="d-none-l">
+                            </td>
+                            <td class="">
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                <div class="checkout_btn_inner d-flex align-items-center">
+                                    <a class="gray_btn" href="/Shop">Continue Shopping</a>
+                                    <a class="primary-btn ml-2" href="/Cart/Checkout">Proceed to checkout</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Cart Area =================-->

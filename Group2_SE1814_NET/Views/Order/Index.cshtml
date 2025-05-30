@@ -1,0 +1,87 @@
+﻿ @model IEnumerable<Group2_SE1814_NET.Models.Order>
+ @using Group2_SE1814_NET.ViewModels
+@{
+    ViewData["Title"] = "Order Page";
+    List<OrderGHNViewModel> orders = ViewBag.Orders as List<OrderGHNViewModel> ?? new List<OrderGHNViewModel>();
+
+}
+<!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Order History</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="~/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Order History</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ end banner area ================= -->
+<!--================Cart Area =================-->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">OrderCode</th>
+                            <th scope="col">ToName</th>
+                            <th scope="col">ToPhone</th>
+                            <th scope="col">ToAddress</th>
+                            <th scope="col">Order Create Date</th>
+                            <th scope="col">CodAmount</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in orders)
+                        {
+                            <tr>
+                                <td>
+                                    @item.OrderCode
+                                </td>
+                                <td>
+                                    @item.ToName
+                                </td>
+                                <td>
+                                    @item.ToPhone
+                                </td>
+                                <td>
+                                    @item.ToAddress
+                                </td>
+                                <td>
+                                    @item.CreateDate
+                                </td>
+                                <td>
+                                    <h5>$@item.CodAmount</h5>
+                                </td>
+                                <td>
+                                    <p class="card-text">
+                                        <span class="badge bg-info">
+                                            @item.Status
+                                        </span>
+                                    </p>
+                                </td>
+                                <td>
+                                    <a onclick="window.location.href='@Url.Action("Detail", "Order", new { orderCode = @item.OrderCode})'; return false;"
+                                       type="button">
+                                        <i class="lnr lnr-eye" style="font-size:20px;cursor:pointer"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Cart Area =================-->

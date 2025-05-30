@@ -1,0 +1,576 @@
+﻿@using Group2_SE1814_NET.ViewModels
+@model Group2_SE1814_NET.ViewModels.OrderViewModel
+@{
+    ViewData["Title"] = "Checkout Page";
+}
+
+<!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Product Checkout</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="~/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ end banner area ================= -->
+<!--================Checkout Area =================-->
+<section class="checkout_area section-margin--small">
+    <div class="container">
+        <div class="billing_details">
+            <form asp-controller="Cart" asp-action="Checkout" method="post">
+                <div class="row">
+                    <!-- Billing Details -->
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm p-4">
+                            <h3 class="mb-4">Billing Details</h3>
+
+                            <!-- Họ và tên -->
+                            <div class="form-group mb-3">
+                                <label for="name" class="form-label">Họ và tên:</label>
+                                <input type="text" class="form-control" id="name" name="Name" required placeholder="Nhập họ và tên" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <!-- Số nhà, tên đường -->
+                            <div class="form-group mb-3">
+                                <label for="streetAddress" class="form-label">Số nhà, tên đường:</label>
+                                <input type="text" class="form-control" id="streetAddress" name="StreetAddress" required placeholder="Nhập số nhà và tên đường" />
+                                <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                            </div>
+
+                            <!-- Số điện thoại -->
+                            <div class="form-group mb-3">
+                                <label for="phone" class="form-label">Số điện thoại:</label>
+                                <input type="text" class="form-control" id="phone" name="Phone" required placeholder="Nhập số điện thoại" />
+                            </div>
+
+                            <!-- Chọn tỉnh/thành phố -->
+                            <div class="form-group mb-3">
+                                <label for="province" class="form-label">Chọn tỉnh/thành phố:</label>
+                                <select class="form-control" id="province_to" name="ProvinceId" required>
+                                    <option value="">-- Chọn tỉnh/thành phố --</option>
+                                </select>
+                                <input type="hidden" id="provinceName" name="ProvinceName" />
+                            </div>
+
+                            <!-- Danh sách quận/huyện -->
+                            <div class="form-group mb-3" id="districtContainer" style="display: none;">
+                                <label class="form-label">Danh sách quận/huyện:</label>
+                                <select class="form-control" id="district_to" name="DistrictId">
+                                    <option value="">-- Chọn quận/huyện --</option>
+                                </select>
+                                <input type="hidden" id="districtName" name="DistrictName" />
+                            </div>
+
+                            <!-- Danh sách phường/xã -->
+                            <div class="form-group mb-3" id="wardContainer" style="display: none;">
+                                <label class="form-label">Danh sách phường/xã:</label>
+                                <select class="form-control" id="ward_to" name="WardId">
+                                    <option value="">-- Chọn phường/xã --</option>
+                                </select>
+                                <input type="hidden" id="wardName" name="WardName" />
+                            </div>
+
+                            <input type="hidden" id="district_id_from" name="district_id_from" readonly>
+                            <input type="hidden" id="ward_code_from" name="ward_code_from" readonly>
+                            <input type="hidden" id="shop_id" name="ShopId" readonly>
+
+                            <!-- Danh sách shop -->
+                            <div class="form-group mb-3" id="shopContainer" style="display: none;">
+                                <label class="form-label">Danh sách shop:</label>
+                                <select class="form-control" id="shops">
+                                    <option value="">-- Chọn shop --</option>
+                                </select>
+                            </div>
+
+                            <!-- Dịch vụ vận chuyển -->
+                            <div class="form-group mb-3" id="serviceContainer" style="display: none;">
+                                <label class="form-label">Danh sách dịch vụ vận chuyển:</label>
+                                <select class="form-control" id="services" name="ServiceId">
+                                    <option value="">-- Chọn dịch vụ --</option>
+                                </select>
+                            </div>
+
+                            <!-- Phương thức thanh toán -->
+                            <div class="form-group mb-3">
+                                <label class="form-label">Phương thức thanh toán:</label>
+                                <div class="payment-methods d-flex flex-wrap gap-3">
+                                    <div class="payment-option">
+                                        <input class="form-check-input" type="radio" name="PaymentMethod" id="paymentPayOs" value="PayOS" required>
+                                        <label class="form-check-label" for="paymentPayOs">
+                                            <img src="~/img/payment/payos.png" alt="PayOs" /> PayOs
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input class="form-check-input" type="radio" name="PaymentMethod" id="paymentVNpay" value="VNpay">
+                                        <label class="form-check-label" for="paymentVNpay">
+                                            <img src="~/img/payment/vnpay.png" alt="VNpay" /> VNpay
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input class="form-check-input" type="radio" name="PaymentMethod" id="paymentCOD" value="COD">
+                                        <label class="form-check-label" for="paymentCOD">
+                                            <img src="~/img/payment/ghn.png" alt="COD" /> COD
+                                        </label>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                            </div>
+
+                            <!-- Hidden inputs -->
+                            <input type="hidden" id="shippingFeeInput" name="ShippingFee" value="0">
+                            <input type="hidden" id="grandTotalInput" name="GrandTotal" value="0">
+                            <input type="hidden" id="serviceTypeId" name="ServiceTypeId" value="0">
+                        </div>
+                    </div>
+
+                    <!-- Your Order -->
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm p-4 order_box">
+                            <h2 class="mb-4">Your Order</h2>
+                            <ul class="list">
+                                <li class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                                    <h4 class="mb-0">Product</h4>
+                                    <h4 class="mb-0">Total</h4>
+                                </li>
+                                @{
+                                    var cart = ViewBag.Cart as List<Item>;
+                                    var total = cart?.Sum(x => x.Quantity * x.Product.Price) ?? 0;
+                                }
+                                @foreach (var item in ViewBag.Cart)
+                                {
+                                    <li class="d-flex justify-content-between align-items-center py-2">
+                                        <span>@item.Product.Name <span class="middle">x @item.Quantity</span></span>
+                                        <span>$@String.Format("{0:0.00}", item.Product.Price * item.Quantity)</span>
+                                    </li>
+                                }
+                            </ul>
+                            <ul class="list list_2 mt-3">
+                                <li class="d-flex justify-content-between align-items-center py-2 border-top">
+                                    <span>Subtotal</span>
+                                    <span>$@String.Format("{0:0.00}", total)</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2">
+                                    <span>Shipping Fee</span>
+                                    <span id="shippingFeeDisplay">$0.00</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-top">
+                                    <span class="font-weight-bold">Total</span>
+                                    <span id="grandTotal" class="font-weight-bold">$@String.Format("{0:0.00}", total)</span>
+                                </li>
+                            </ul>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-block btn-checkout">Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!--================End Checkout Area =================-->
+@section Styles {
+    <style>
+        /* General Styles */
+        .checkout_area {
+            padding: 50px 0;
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-control:focus {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            font-size: 16px;
+            box-shadow: none;
+        }
+
+            .form-control:focus {
+                border-color: #007bff;
+            }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .payment-option {
+            flex: 1;
+            min-width: 120px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .payment-option:hover {
+                border-color: #007bff;
+                box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+            }
+
+            .payment-option input {
+                display: none;
+            }
+
+            .payment-option label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                margin-bottom: 0;
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+            }
+
+            .payment-option img {
+                width: 40px;
+                height: auto;
+                margin-bottom: 5px;
+            }
+
+            .payment-option input:checked + label {
+                background-color: #e7f0ff;
+                border: 2px solid #007bff;
+                border-radius: 8px;
+                padding: 8px;
+            }
+
+        /* Order Box */
+        .order_box {
+            background-color: #f1f5f9;
+        }
+
+            .order_box h2 {
+                font-size: 24px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .order_box ul.list li {
+                font-size: 16px;
+                color: #555;
+            }
+
+            .order_box ul.list_2 li {
+                font-size: 16px;
+                color: #333;
+            }
+
+                .order_box ul.list_2 li span.font-weight-bold {
+                    font-size: 18px;
+                    color: #007bff;
+                }
+
+        /* Checkout Button */
+        .btn-checkout {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 25px;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+            .btn-checkout:hover {
+                background: linear-gradient(90deg, #0056b3, #003d80);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+            }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Tính toán subtotal từ ViewBag.Cart trong Razor và truyền sang JavaScript
+        @{
+            var cart = ViewBag.Cart as List<Item>;
+            var subtotal = cart?.Sum(x => x.Quantity * x.Product.Price) ?? 0;
+        }
+                    var subtotal = @Html.Raw(subtotal); // Truyền giá trị subtotal sang JavaScript
+
+            // Load provinces khi trang tải
+            $.ajax({
+                url: '/GHN/GetProvinces',
+                type: 'GET',
+                success: function (data) {
+                    var $provinceSelect = $('#province_to');
+                    $provinceSelect.append('<option value="">-- Chọn tỉnh/thành phố --</option>');
+                    $.each(data, function (index, province) {
+                        $provinceSelect.append(
+                            $('<option>').val(province.provinceID).text(province.provinceID + ' - ' + province.provinceName)
+                        );
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error loading provinces:', error);
+                }
+            });
+
+            // Load districts khi chọn province
+            $('#province_to').change(function () {
+                var provinceId = $(this).val();
+                var provinceName = $(this).find(':selected').text().split(' - ')[1]; // Lấy tên tỉnh
+                $('#provinceName').val(provinceName); // Lưu tên tỉnh vào hidden input
+                if (provinceId) {
+                    $.ajax({
+                        url: '/GHN/GetDistricts',
+                        type: 'GET',
+                        data: { provinceId: provinceId },
+                        success: function (data) {
+                            var $districtSelect = $('#district_to');
+                            $districtSelect.empty();
+                            $districtSelect.append('<option value="">-- Chọn quận/huyện --</option>');
+                            $.each(data, function (index, district) {
+                                $districtSelect.append(
+                                    $('<option>').val(district.districtID).text(district.districtID + ' - ' + district.districtName)
+                                );
+                            });
+                            $('#districtContainer').show();
+                            $('#wardContainer').hide(); // Ẩn wards khi đổi province
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('Error loading districts:', error);
+                        }
+                    });
+                } else {
+                    $('#districtContainer').hide();
+                    $('#wardContainer').hide();
+                }
+            });
+
+            // Load wards khi chọn district
+            $('#district_to').change(function () {
+                var districtId = $(this).val();
+                var districtName = $(this).find(':selected').text().split(' - ')[1]; // Lấy tên quận/huyện
+                $('#districtName').val(districtName); // Lưu tên quận/huyện vào hidden input
+                if (districtId) {
+                    $.ajax({
+                        url: '/GHN/GetWards',
+                        type: 'GET',
+                        data: { districtId: districtId },
+                        success: function (data) {
+                            var $wardSelect = $('#ward_to');
+                            $wardSelect.empty();
+                            $wardSelect.append('<option value="">-- Chọn phường/xã --</option>');
+                            $.each(data, function (index, ward) {
+                                $wardSelect.append(
+                                    $('<option>').val(ward.wardCode).text(ward.wardCode + ' - ' + ward.wardName)
+                                );
+                            });
+                            $('#wardContainer').show();
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('Error loading wards:', error);
+                        }
+                    });
+
+                    // Load available services khi chọn district
+                    var shopId = $('#shop_id').val();
+                    var fromDistrictId = $('#district_id_from').val();
+                    var toDistrictId = $('#district_to').val();
+
+                    if (shopId && fromDistrictId && toDistrictId) {
+                        $.ajax({
+                            url: '/GHN/GetAvailableServices',
+                            type: 'GET',
+                            data: {
+                                shopId: shopId,
+                                fromDistrictId: fromDistrictId,
+                                toDistrictId: toDistrictId
+                            },
+                            success: function (data) {
+                                var $serviceSelect = $('#services');
+                                $serviceSelect.empty();
+                                $serviceSelect.append('<option value="">-- Chọn dịch vụ --</option>');
+
+                                // Kiểm tra xem data có phải là mảng và có dữ liệu hay không
+                                if (Array.isArray(data) && data.length > 0) {
+                                    $.each(data, function (index, service) {
+                                        // Lưu cả service_id và service_type_id vào data attributes của option
+                                        $serviceSelect.append(
+                                            $('<option>')
+                                                .val(service.service_id) // Chỉ lưu service_id vào value
+                                                .text(service.short_name)
+                                                .data('service-type-id', service.service_type_id) // Lưu service_type_id vào data attribute
+                                        );
+                                    });
+                                    $('#serviceContainer').show();
+                                } else {
+                                    console.log('No valid services data received');
+                                    $('#serviceContainer').hide();
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.log('Error loading available services:', error);
+                                $('#serviceContainer').hide();
+                            }
+                        });
+                    } else {
+                        $('#serviceContainer').hide();
+                    }
+                } else {
+                    $('#wardContainer').hide();
+                    $('#serviceContainer').hide();
+                }
+            });
+
+            // Lưu tên phường/xã khi chọn ward
+            $('#ward_to').change(function () {
+                var wardName = $(this).find(':selected').text().split(' - ')[1]; // Lấy tên phường/xã
+                $('#wardName').val(wardName); // Lưu tên phường/xã vào hidden input
+            });
+
+            // Load shops khi trang tải hoặc khi cần
+            function loadShops() {
+                $.ajax({
+                    url: '/GHN/GetShops',
+                    type: 'GET',
+                    success: function (data) {
+                        var $shopSelect = $('#shops');
+                        $shopSelect.empty();
+                        $shopSelect.append('<option value="">-- Chọn shop --</option>');
+
+                        // Kiểm tra nếu data có dữ liệu
+                        if (data && data.length > 0) {
+                            $.each(data, function (index, shop) {
+                                $shopSelect.append(
+                                    $('<option>').val(shop._id).text(shop.name).data('district-id', shop.district_id).data('ward-code', shop.ward_code)
+                                );
+                            });
+
+                            // Hiển thị container shop
+                            $('#shopContainer').show();
+
+                            // Gắn district_id và ward_code của shop đầu tiên (hoặc shop được chọn)
+                            if (data.length > 0) {
+                                $('#district_id_from').val(data[0].district_id); // Gán district_id của shop đầu tiên
+                                $('#ward_code_from').val(data[0].ward_code);    // Gán ward_code của shop đầu tiên
+                                $('#shop_id').val(data[0]._id);    // Gán shop_id của shop đầu tiên
+                            }
+
+                            // Cập nhật district_id và ward_code khi chọn shop
+                            $shopSelect.on('change', function () {
+                                var selectedShop = $(this).find(':selected');
+                                var districtId = selectedShop.data('district-id');
+                                var wardCode = selectedShop.data('ward-code');
+                                var shopId = selectedShop.val();
+                                $('#district_id_from').val(districtId);
+                                $('#ward_code_from').val(wardCode);
+                                $('#shop_id').val(shopId);
+                            });
+                        } else {
+                            console.log('No shops received');
+                            $('#shopContainer').hide();
+                            $('#district_id_from').val(''); // Xóa nếu không có dữ liệu
+                            $('#ward_code_from').val('');   // Xóa nếu không có dữ liệu
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error loading shops:', error);
+                        $('#shopContainer').hide();
+                        $('#district_id_from').val(''); // Xóa nếu có lỗi
+                        $('#ward_code_from').val('');   // Xóa nếu có lỗi
+                    }
+                });
+            }
+
+            // Load shipping fee và tính tổng chi phí khi thay đổi các giá trị liên quan
+            $('#shops, #district_to, #ward_to, #services').change(function () {
+                var shopId = $('#shop_id').val();
+                var fromDistrictId = $('#district_id_from').val();
+                var toDistrictId = $('#district_to').val();
+                var toWardCode = $('#ward_to').val();
+                var serviceId = $('#services').val();
+
+                // Lấy service_type_id từ data attribute của option đã chọn
+                var serviceTypeId = $('#services').find(':selected').data('service-type-id') || '';
+
+                // Lưu service_type_id vào hidden input
+                $('#serviceTypeId').val(serviceTypeId);
+
+                // Kiểm tra và hiển thị thông tin nếu cần
+                console.log('Selected Service ID:', serviceId);
+                console.log('Selected Service Type ID:', serviceTypeId);
+
+                if (shopId && fromDistrictId && toDistrictId && toWardCode && serviceId) {
+                    $.ajax({
+                        url: '/GHN/GetShippingFee',
+                        type: 'GET',
+                        data: {
+                            shopId: shopId,
+                            fromDistrictId: fromDistrictId,
+                            toDistrictId: toDistrictId,
+                            toWardCode: toWardCode,
+                            serviceId: serviceId
+                        },
+                        success: function (data) {
+                            console.log("Data Shipping", data);
+                            var shippingFee = data && data.total ? data.total : 0; // Lấy phí vận chuyển, mặc định là 0 nếu không có
+
+                            // Hiển thị phí vận chuyển
+                            $('#shippingFeeDisplay').text('$' + (shippingFee / 24000).toFixed(2)); // Chuyển đổi VND sang USD (giả sử tỷ giá 1 USD = 24,000 VND)
+
+                            // Tính tổng chi phí (subtotal + shippingFee)
+                            var grandTotal = subtotal + (shippingFee / 24000); // Chuyển đổi phí vận chuyển sang USD trước khi cộng
+                            $('#grandTotal').text('$' + grandTotal.toFixed(2)); // Hiển thị tổng chi phí với 2 chữ số thập phân
+
+                            // Lưu giá trị vào hidden input
+                            $('#shippingFeeInput').val(shippingFee); // Lưu phí vận chuyển (VND)
+                            $('#grandTotalInput').val(grandTotal);   // Lưu tổng chi phí (USD)
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('Error loading shipping fee:', error);
+                            $('#shippingFeeDisplay').text('$0.00');
+                            $('#grandTotal').text('$' + subtotal.toFixed(2)); // Nếu lỗi, tổng chi phí chỉ là subtotal
+
+                            // Reset giá trị hidden input
+                            $('#shippingFeeInput').val(0);
+                            $('#grandTotalInput').val(subtotal);
+                        }
+                    });
+                } else {
+                    $('#shippingFeeDisplay').text('$0.00');
+                    $('#grandTotal').text('$' + subtotal.toFixed(2)); // Nếu không đủ thông tin, tổng chi phí chỉ là subtotal
+
+                    // Reset giá trị hidden input
+                    $('#shippingFeeInput').val(0);
+                    $('#grandTotalInput').val(subtotal);
+                }
+            });
+
+            // Gọi loadShops khi trang tải
+            loadShops();
+        });
+    </script>
+}

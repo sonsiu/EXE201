@@ -1,0 +1,121 @@
+﻿ @model Order
+ @using Group2_SE1814_NET.ViewModels
+@{
+    ViewData["Title"] = "Order Page";
+    OrderGHNViewModel item = ViewBag.Order as OrderGHNViewModel ?? new OrderGHNViewModel();
+
+}
+<!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Order History</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="~/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Order History</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ end banner area ================= -->
+<!--================Cart Area =================-->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="card shadow-sm">
+                <div class="col-md-12 mb-12">
+                    <h3>Order Details</h3>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Order Receiver</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.ToName readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.ToPhone readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.ToAddress readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Created Date: </label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.CreateDate.ToString("dd/MM/yyyy") readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">COD Amount</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.CodAmount< readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Order Status</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.Status< readonly />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in item.ProductGHNs)
+                        {
+                            <tr>
+                                <td>
+                                    @product.Name
+                                </td>
+                                <td>
+                                    @product.Code
+                                </td>
+                                <td>
+                                    @product.Quantity
+                                </td>
+                                <td>
+                                    @product.Weight
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="billing_details">
+                <div class="col-lg-12">
+                    <label for="orderNote" class="form-label">Note:</label>
+                    <textarea class="form-control" id="orderNote"
+                              name="note"
+                              rows="4" cols="100"
+                    @(item.Status == "cancel" ? "disabled" : "")>@item.Note</textarea>
+                </div>
+            </div>
+
+            @{
+                if (item.Status != "cancel")
+                {
+                    <form asp-action="CancelOrder" asp-controller="Order" method="post">
+                        <input type="hidden" name="orderCode" value="@item.OrderCode" />
+                        <button type="submit" class="btn btn-danger">Cancel Order</button>
+                    </form>
+                }
+            }
+
+        </div>
+    </div>
+</section>
+<!--================End Cart Area =================-->

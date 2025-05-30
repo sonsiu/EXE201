@@ -1,0 +1,146 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Group2_SE1814_NET.Extensions;
+@using Group2_SE1814_NET.ViewModels
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>
+		Aroma Shop - @ViewData["Title"]
+	</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link rel="icon" href="~/img/Fevicon.png" type="image/png">
+
+	<link rel="stylesheet" href="~/vendors/bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="~/vendors/fontawesome/css/all.min.css">
+	<link rel="stylesheet" href="~/vendors/themify-icons/themify-icons.css">
+
+	<link rel="stylesheet" href="~/vendors/linericon/style.css">
+
+	<link rel="stylesheet" href="~/vendors/nice-select/nice-select.css">
+	<link rel="stylesheet" href="~/vendors/owl-carousel/owl.theme.default.min.css">
+	<link rel="stylesheet" href="~/vendors/owl-carousel/owl.carousel.min.css">
+
+	<link rel="stylesheet" href="~/vendors/nouislider/nouislider.min.css">
+
+	<link rel="stylesheet" href="~/css/style.css">
+	<!-- Render the Styles section if defined in the view -->
+	@RenderSection("Styles", required: false)
+
+</head>
+<body>
+	<!--================ Start Header Menu Area =================-->
+	<header class="header_area">
+		<div class="main_menu">
+			<nav class="navbar navbar-expand-lg navbar-light">
+				<div class="container">
+					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+						<ul class="nav navbar-nav menu_nav ml-auto mr-auto">
+							<li class="nav-item @(ViewContext.HttpContext.Request.Path == "/" ? "active" : "")"><a class="nav-link" href="~/">Home</a></li>
+							<li class="nav-item @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Shop") ? "active" : "")">
+								<a class="nav-link" href="~/Shop">Shop</a>
+							</li>
+
+
+
+							@if (HttpContextAccessor.HttpContext.Session.GetObjectFromSession<User>("user") != null)
+							{
+								<li class="nav-item @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Order/index") ? "active" : "")">
+									<a class="nav-link" asp-controller="Order" asp-action="GetAllOrder">Order</a>
+								</li>
+							}
+							<!-- User Authentication -->
+							@if (HttpContextAccessor.HttpContext.Session.GetObjectFromSession<User>("user") != null)
+							{
+								var user = HttpContextAccessor.HttpContext.Session.GetObjectFromSession<User>("user");
+								<li class="nav-item @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Auth") ? "active" : "") submenu dropdown">
+									<a href="~/#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+									   aria-expanded="false">Hello, @user.Fullname</a>
+									<ul class="dropdown-menu">
+										@* <li class="nav-item"><a class="nav-link" href="#">Profile</a></li> *@
+										<li class="nav-item"><a class="nav-link" href="~/Auth/Logout">Logout</a></li>
+									</ul>
+								</li>
+							}
+							else
+							{
+								<li class="nav-item @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Auth") ? "active" : "")"><a class="nav-link" href="~/Auth/Login">Login</a></li>
+							}
+						</ul>
+
+						<ul class="nav-shop">
+							<li class="nav-item">
+								<a asp-controller="Cart" asp-action="Index">
+									<button>
+										<i class="ti-shopping-cart"></i>
+										@if (HttpContextAccessor.HttpContext.Session.GetObjectFromSession<List<Item>>("cart") is List<Item> cart && cart.Count > 0)
+										{
+											<span class="nav-shop__circle">@cart.Count</span>
+										}
+									</button>
+								</a>
+							</li>
+
+							<li class="nav-item"><a class="button button-header" href="~/Shop">Buy Now</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!--================ End Header Menu Area =================-->
+
+	<main class="site-main">
+
+		@RenderBody()
+
+
+
+	</main>
+
+
+	<!--================ Start footer Area  =================-->
+	<!--================ End footer Area  =================-->
+	<script src="~/lib/jquery/dist/jquery.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+	<script src="~/vendors/jquery/jquery-3.2.1.min.js"></script>
+	<script src="~/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+	<script src="~/vendors/skrollr.min.js"></script>
+	<script src="~/vendors/owl-carousel/owl.carousel.min.js"></script>
+	<script src="~/vendors/nice-select/jquery.nice-select.min.js"></script>
+
+	<script src="~/vendors/nouislider/nouislider.min.js"></script>
+
+	<script src="~/vendors/jquery.ajaxchimp.min.js"></script>
+	<script src="~/vendors/mail-script.js"></script>
+	<script src="~/js/main.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+	@if (TempData["ErrorMessage"] != null)
+	{
+		<script type="text/javascript">
+			$(document).ready(function () {
+				toastr.error(`@TempData["ErrorMessage"]`, 'Error', { timeOut: 10000 });
+			});
+		</script>
+	}
+
+	@if (TempData["SuccessMessage"] != null)
+	{
+		<script type="text/javascript">
+			$(document).ready(function () {
+				toastr.success(`@TempData["SuccessMessage"]`, 'Success', { timeOut: 10000 });
+			});
+		</script>
+	}
+
+
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

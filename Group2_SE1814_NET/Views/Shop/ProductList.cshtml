@@ -1,0 +1,61 @@
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList
+@model X.PagedList.IPagedList<Group2_SE1814_NET.Models.Product>
+<section class="lattest-product-area pb-40 category-list" id="product-list-container">
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card text-center card-product">
+                    <div class="card-product__img">
+                        <img class="card-img" src="~/@product.ImageUrl" alt="" style="height:260px">
+                        <ul class="card-product__imgOverlay">
+                            <li><button><i class="ti-search"></i></button></li>
+                            @if (product.Quantity > 0)
+                            {
+                                <li> <a asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id"><button><i class="ti-shopping-cart"></i></button></a></li>
+                            }
+                            <li><button><i class="ti-heart"></i></button></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <p>@product.Category.Name</p>
+                        <h4 class="card-product__title"><a asp-controller="Shop" asp-action="Detail" asp-route-id="@product.Id">@product.Name</a></h4>
+                        <p class="card-product__price">$@product.Price</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <nav class="blog-pagination justify-content-center d-flex">
+        <ul class="pagination">
+            <!-- Previous Button -->
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a href="javascript:void(0);"
+                   class="page-link" data-page="@(Model.PageNumber - 1)" aria-label="Previous">
+                    <span aria-hidden="true">
+                        <span class="lnr lnr-chevron-left"></span>
+                    </span>
+                </a>
+            </li>
+
+            <!-- Page Number Links -->
+            @for (int i = 1; i <= Model.PageCount; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a href="javascript:void(0);" class="page-link" data-page="@i">@i</a>
+                </li>
+            }
+
+            <!-- Next Button -->
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a href="javascript:void(0);"
+                   class="page-link" data-page="@(Model.PageNumber + 1)" aria-label="Next">
+                    <span aria-hidden="true">
+                        <span class="lnr lnr-chevron-right"></span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</section>

@@ -1,0 +1,52 @@
+﻿@model Group2_SE1814_NET.Models.Order
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="listright">
+<h1>Details</h1>
+
+<div>
+    <h4>Order</h4>
+        <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Sub Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>
+                        <div class="media">
+                            <div class="d-flex">
+                                <img src="~/@item.Product.ImageUrl" alt="" style="width:150px">
+                            </div>
+                            <div class="media-body">
+                                <p>@item.Product.Name</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        @item.Quantity
+                    </td>
+                    <td>
+                        @item.UnitPrice
+                    </td>
+                    <td>
+                        <h5>@String.Format("{0:0.00}", item.Product.Price * item.Quantity)</h5>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        </table>
+
+</div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+    </div>

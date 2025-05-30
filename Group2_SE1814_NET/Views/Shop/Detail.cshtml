@@ -1,0 +1,47 @@
+﻿@model Product
+@{
+	ViewData["Title"] = "Detail Page";
+}
+<div class="product_image_area">
+	<div class="container">
+		<div class="row s_product_inner">
+			<div class="col-lg-6">
+				<div class="owl-carousel owl-theme s_Product_carousel">
+					<div class="single-prd-item">
+						<img class="img-fluid" src="@Model.ImageUrl" alt="@Model.Name">
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-5 offset-lg-1">
+				<div class="s_product_text">
+					<h3>@Model.Name</h3>
+					<h2>$@Model.Price</h2>
+
+					<ul class="list">
+						<li><a class="active" href="#"><span>Category</span> : @Model.Category.Name</a></li>
+						<li>
+							<a href="#">
+								<span>Availibility</span> : @if (Model.Quantity > 0)
+								{
+									<span style="color: green;">In Stock</span>
+								}
+								else
+								{
+									<span style="color: red;">Out of Stock</span>
+								}
+							</a>
+						</li>
+					</ul>
+					<p>
+						@Model.Description
+					</p>
+					<div class="product_count">
+						<a class="button primary-btn" asp-controller="Cart" asp-action="Add" asp-route-id="@Model.Id">Add to Cart</a>
+					</div>
+					<div class="card_area d-flex align-items-center">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

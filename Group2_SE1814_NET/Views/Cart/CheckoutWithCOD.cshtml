@@ -1,0 +1,124 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0 text-center">Order Placed Successfully!</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3">Thank you for your order</h4>
+                        <p class="text-muted">Your order has been placed and will be processed soon.</p>
+                    </div>
+
+                    <div class="order-details p-3 bg-light rounded mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">Order Details</h5>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Order Number:</div>
+                            <div class="col-md-8">@Model.Id</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Order Date:</div>
+                            <div class="col-md-8">@Model.OrderDate</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Payment Method:</div>
+                            <div class="col-md-8">Cash On Delivery (COD)</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Order Status:</div>
+                            <div class="col-md-8"><span class="badge bg-primary">@Model.OrderStatus</span></div>
+                        </div>
+                    </div>
+
+                    <div class="shipping-info p-3 bg-light rounded mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">Shipping Information</h5>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Name:</div>
+                            <div class="col-md-8">@Model.Name</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Phone:</div>
+                            <div class="col-md-8">@Model.Phone</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Address:</div>
+                            <div class="col-md-8">@Model.Address</div>
+                        </div>
+                    </div>
+
+                    <div class="order-items p-3 bg-light rounded mb-4">
+                        <h5 class="border-bottom pb-2 mb-3">Order Items</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-end">Price</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderDetails)
+                                    {
+                                        <tr>
+                                            <td>@item.Product.Name</td>
+                                            <td class="text-center">@item.Quantity</td>
+                                            <td class="text-end">$@item.Product.Price</td>
+                                            <td class="text-end">$@Model.TotalAmountBefore</td>
+                                            
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="fw-bold">
+                                    <tr>
+                                        <td colspan="3" class="text-end">Subtotal:</td>
+                                        <td class="text-end">$@Model.TotalAmountBefore</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" class="text-end">Shipping Fee:</td>
+                                        <td class="text-end">$@(((double)Model.ShippingFee / 24000).ToString("0.00"))</td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" class="text-end">Grand Total:</td>
+                                        <td class="text-end">$@Model.TotalAmountAfter</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary me-2">
+                            <i class="fas fa-home me-1"></i> Return to Home
+                        </a>
+                        <a href="@Url.Action("Orders", "Account")" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i> View All Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Optional: Add animations or tracking code here
+        $(document).ready(function () {
+            // Success animation
+            $('.card').hide().fadeIn(1000);
+        });
+    </script>
+}

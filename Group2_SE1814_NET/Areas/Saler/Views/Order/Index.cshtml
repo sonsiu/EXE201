@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Group2_SE1814_NET.Models.Order>
+@using Group2_SE1814_NET.ViewModels
+@{
+	ViewBag.Title = "Order";
+    List<OrderGHNViewModel> orders = ViewBag.Orders as List<OrderGHNViewModel> ?? new List<OrderGHNViewModel>();
+
+}
+
+<div class="listright">
+    <h2>Manager Order</h2>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Order Code</th>
+                <th scope="col">To Name</th>
+                <th scope="col">To Phone</th>
+                <th scope="col">To Address</th>
+                <th scope="col">Order Create Date</th>
+                <th scope="col">Cod Amount</th>
+                <th scope="col">Status</th>
+                <th scope="col">Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in orders)
+            {
+                <tr>
+                    <td>
+                        @item.OrderCode
+                    </td>
+                    <td>
+                        @item.ToName
+                    </td>
+                    <td>
+                        @item.ToPhone
+                    </td>
+                    <td>
+                        @item.ToAddress
+                    </td>
+                    <td>
+                        @item.CreateDate
+                    </td>
+                    <td>
+                        <h5>$@item.CodAmount</h5>
+                    </td>
+                    <td>
+                        <p class="card-text">
+                            <span class="badge bg-info">
+                                @item.Status
+                            </span>
+                        </p>
+                    </td>
+                    <td>
+
+                        <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Detail", "Order", new { area = "Saler", orderCode = @item.OrderCode})'">
+                            Detail
+                        </button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>

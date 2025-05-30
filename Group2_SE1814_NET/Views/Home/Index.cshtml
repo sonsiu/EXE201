@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!--================ Hero banner start =================-->
+
+<section class="section-margin calc-60px">
+    <div class="container">
+        <div class="section-intro pb-60px">
+            <p>New Items in the market</p>
+            <h2>Newest <span class="section-intro__style">Product</span></h2>
+        </div>
+        <div class="row">
+            @foreach (var product in Model)
+        {
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card text-center card-product">
+                    <div class="card-product__img">
+                            <img class="card-img" src="@product.ImageUrl" alt="@product.Name" style="height:260px">
+
+                        <ul class="card-product__imgOverlay">
+                            <li><button><i class="ti-search"></i></button></li>
+                                @if (product.Quantity > 0)
+                                {
+                                    <li>
+                                        <a asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id"><button><i class="ti-shopping-cart"></i></button></a>
+
+                                    </li>
+                                }
+                            <li><button><i class="ti-heart"></i></button></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                            <p>@product.Category.Name</p>
+                            <h4 class="card-product__title"><a asp-controller="Shop" asp-action="Detail" asp-route-id="@product.Id">@product.Name</a></h4>
+                            <p class="card-product__price">$@product.Price</p>
+                    </div>
+                </div>
+            </div>
+           }
+        </div>
+    </div>
+</section>
+
+

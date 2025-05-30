@@ -1,0 +1,141 @@
+﻿
+@model Order
+@using Group2_SE1814_NET.ViewModels
+@{
+    ViewBag.Title = "Order";
+    OrderGHNViewModel item = ViewBag.Order as OrderGHNViewModel ?? new OrderGHNViewModel();
+
+}
+
+
+<div class="">
+    <section class="cart_area">
+        <div class="container">
+            <div class="cart_inner">
+                <div class="col-md-12 mb-12">
+                    <h3>Order Details</h3>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Order Receiver</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.ToName readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.ToPhone readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.ToAddress readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Created Date: </label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.CreateDate.ToString("dd/MM/yyyy") readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">COD Amount</label>
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.CodAmount< readonly />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Order Status</label>
+
+
+                        <input type="text" class="form-control" id="name" name="Name" required placeholder=@item.Status readonly />
+                    </div>
+
+
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in item.ProductGHNs)
+                            {
+                                <tr>
+                                    <td>
+                                        @product.Name
+                                    </td>
+                                    <td>
+                                        @product.Code
+                                    </td>
+                                    <td>
+                                        @product.Quantity
+                                    </td>
+                                    <td>
+                                        @product.Weight
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="billing_details">
+                    <form asp-action="UpdateNote" asp-controller="Order" asp-area="Saler" method="post">
+                        <!-- Billing Details -->
+                        <div class="col-lg-12">
+                            <div class="card shadow-sm p-8">
+                                <div class="form-group mb-3">
+                                    <label for="orderNote" class="form-label">Note:</label>
+                                    <textarea class="form-control" id="orderNote"
+                                              name="note"
+                                              rows="4" cols="100"
+                                    @(item.Status == "cancel" ? "disabled" : "")>@item.Note</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="orderCode" value="@item.OrderCode" />
+                        @if (item.Status != "cancel")
+                        {
+                            <button class="btn btn-primary" type="submit">Update Note</button>
+                        }
+                    </form> 
+                </div>
+
+
+                <div class="billing_details">
+                    <div class=" mt-12">
+
+                        <form asp-action="UpdateStatus" asp-controller="Order" asp-area="Saler" method="post">
+                            <label for="orderStatus">Status:</label>
+                            <select class="form-control" id="orderStatus" name="orderStatus" required>
+                                <option value="">@item.Status</option>
+                                @if (item.Status == "ready_to_pick")
+                                {
+                                    <option value="cancel"> Cancel </option>
+                                }
+                                <option value="Picking"> Is Being Picked </option>
+                                <option value="Picked"> Picked</option>
+                                <option value="Sorting">Order Sorting</option>
+                                <option value="Transporting">Order Transporting</option>
+                                <option value="Delivering">Order Delivering Failed</option>
+                                <option value="Delivered">Order Delivered</option>
+                                <option value="Returning">Order Returning</option>
+                                <option value="Returned">Order Returned</option>
+                            </select>
+                            <input type="hidden" name="orderCode" value="@item.OrderCode" />
+
+                            @if (item.Status != "cancel")
+                            {
+                                <button class="btn btn-primary" type="submit">Update Status</button>
+                            }
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
