@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Group2_SE1814_NET.Models;
 
-namespace Group2_SE1814_NET.Models;
-
-public partial class Order
-{
+public partial class Order {
     public int Id { get; set; }
 
     public int? UserId { get; set; }
@@ -19,11 +15,11 @@ public partial class Order
 
     public int? VoucherId { get; set; }
 
-    public Double  TotalAmountBefore { get; set; }
+    public Double TotalAmountBefore { get; set; }
 
     public decimal? DiscountAmount { get; set; }
 
-    public Double  TotalAmountAfter { get; set; }
+    public Double TotalAmountAfter { get; set; }
 
     public string? PaymentMethod { get; set; }
 
@@ -33,13 +29,13 @@ public partial class Order
     public decimal? ShippingFee { get; set; }
     public string? OrderStatus { get; set; }
     public string? Note { get; set; }
-    public string?  OrderCode { get; set; }
-public string? ProvinceName { get; set; }
-public string? DistrictName { get; set; }
-public string? WardName { get; set; }
+    public string? OrderCode { get; set; }
+    public string? ProvinceName { get; set; }
+    public string? DistrictName { get; set; }
+    public string? WardName { get; set; }
 
-public string? ShopId { get; set; }
-public int? ServiceTypeId { get; set; }
+    public string? ShopId { get; set; }
+    public int? ServiceTypeId { get; set; }
 
 
 

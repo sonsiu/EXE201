@@ -8,7 +8,9 @@
             <div class="col-md-6 col-lg-4">
                 <div class="card text-center card-product">
                     <div class="card-product__img">
-                        <img class="card-img" src="~/@product.ImageUrl" alt="" style="height:260px">
+                        <a asp-controller="Shop" asp-action="Detail" asp-route-id="@product.Id">
+                            <img class="card-img" src="~/@product.ImageUrl" alt="" style="height:260px">
+                        </a>
                         <ul class="card-product__imgOverlay">
                             <li><button><i class="ti-search"></i></button></li>
                             @if (product.Quantity > 0)

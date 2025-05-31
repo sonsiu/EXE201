@@ -1,9 +1,5 @@
-﻿using System.Configuration;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Group2_SE1814_NET.Proxy {
     public class EmailServices : IEmailServices {

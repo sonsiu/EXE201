@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Group2_SE1814_NET.Models;
 
-namespace Group2_SE1814_NET.Models;
-
-public partial class Category
-{
+public partial class Category {
     public int? Id { get; set; }
 
     public string? Name { get; set; }

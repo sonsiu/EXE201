@@ -1,16 +1,12 @@
-﻿using Group2_SE1814_NET.ViewModels;
-using Group2_SE1814_NET.Proxy;
-using System.Net;
-using System.Text.Json;
+﻿using System.Net;
 using System.Text;
+using System.Text.Json;
+using Group2_SE1814_NET.ViewModels;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
 
 
-namespace Group2_SE1814_NET.Proxy
-{
-    public class GHNService : IGHNService
-    {
+namespace Group2_SE1814_NET.Proxy {
+    public class GHNService : IGHNService {
         private readonly HttpClient _client;
         private readonly IConfiguration _config;
         private readonly string _token;
@@ -23,8 +19,7 @@ namespace Group2_SE1814_NET.Proxy
         //    _client.DefaultRequestHeaders.Add("token", "fa19bc40-fc2a-11ef-82e7-a688a46b55a3");
         //}
 
-        public GHNService(HttpClient client, IConfiguration config)
-        {
+        public GHNService(HttpClient client, IConfiguration config) {
             _client = client;
             _config = config;
             _token = config["GHN:ApiToken"];
@@ -33,18 +28,15 @@ namespace Group2_SE1814_NET.Proxy
             _client.DefaultRequestHeaders.Add("token", _config["GHN:ApiToken"]);
         }
 
-        public async Task<List<OrderGHNViewModel>> GetAllOrders()
-        {
+        public async Task<List<OrderGHNViewModel>> GetAllOrders() {
             List<OrderGHNViewModel> results = new List<OrderGHNViewModel>();
             HttpResponseMessage response = await _client.GetAsync("https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/search");
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
+            if (response.StatusCode == HttpStatusCode.OK) {
                 string result = await response.Content.ReadAsStringAsync();
                 JsonElement doc = JsonDocument.Parse(result).RootElement;
                 JsonElement data = doc.GetProperty("data");
                 JsonElement orderList = data.GetProperty("data");
-                foreach (JsonElement item in orderList.EnumerateArray())
-                {
+                foreach (JsonElement item in orderList.EnumerateArray()) {
                     string createDate = item.GetProperty("created_date").GetString() ?? "";
                     DateTime createdDate = DateTime.Parse(createDate);
                     string toDate = item.GetProperty("finish_date").GetString() ?? "";
@@ -79,15 +71,13 @@ namespace Group2_SE1814_NET.Proxy
         }
 
 
-        public async Task<OrderGHNViewModel> GetOrderDetailByOrderCode(string orderCode)
-        {
+        public async Task<OrderGHNViewModel> GetOrderDetailByOrderCode(string orderCode) {
             var requestData = new StringContent(JsonSerializer.Serialize(new
             {
                 order_code = orderCode
             }), Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _client.PostAsync("https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail", requestData);
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
+            if (response.StatusCode == HttpStatusCode.OK) {
                 string result = await response.Content.ReadAsStringAsync();
                 JsonElement doc = JsonDocument.Parse(result).RootElement;
                 JsonElement data = doc.GetProperty("data");
@@ -113,11 +103,9 @@ namespace Group2_SE1814_NET.Proxy
             return new OrderGHNViewModel();
         }
 
-        private List<ProductGHNViewModel> GetProducts(JsonElement data)
-        {
+        private List<ProductGHNViewModel> GetProducts(JsonElement data) {
             List<ProductGHNViewModel> results = new List<ProductGHNViewModel>();
-            foreach (JsonElement item in data.EnumerateArray())
-            {
+            foreach (JsonElement item in data.EnumerateArray()) {
                 results.Add(new ProductGHNViewModel
                 {
                     Name = item.TryGetProperty("name", out var nameProp) && nameProp.ValueKind != JsonValueKind.Undefined
@@ -137,8 +125,7 @@ namespace Group2_SE1814_NET.Proxy
             return results;
         }
 
-        public async Task<bool> UpdateOrderNoteById(string orderCode, string note)
-        {
+        public async Task<bool> UpdateOrderNoteById(string orderCode, string note) {
             var requestData = new StringContent(JsonSerializer.Serialize(new
             {
                 note = note,
@@ -147,8 +134,7 @@ namespace Group2_SE1814_NET.Proxy
             }), Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await _client.PostAsync("https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/update", requestData);
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
+            if (response.StatusCode == HttpStatusCode.OK) {
                 string result = await response.Content.ReadAsStringAsync();
                 JsonElement doc = JsonDocument.Parse(result).RootElement;
                 return doc.GetProperty("code").GetString() == "200";
@@ -156,15 +142,13 @@ namespace Group2_SE1814_NET.Proxy
             return false;
         }
 
-        public async Task<bool> CancelOrderById(string orderCode)
-        {
+        public async Task<bool> CancelOrderById(string orderCode) {
             var requestData = new StringContent(JsonSerializer.Serialize(new
             {
                 order_codes = new string[] { orderCode }
             }), Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _client.PostAsync("https://dev-online-gateway.ghn.vn/shiip/public-api/v2/switch-status/cancel", requestData);
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
+            if (response.StatusCode == HttpStatusCode.OK) {
 
                 string result = await response.Content.ReadAsStringAsync();
                 JsonElement doc = JsonDocument.Parse(result).RootElement;
@@ -174,10 +158,8 @@ namespace Group2_SE1814_NET.Proxy
         }
 
         //Changed
-        public async Task<bool> UpdateOrderStatusById(string orderCode, string status)
-        {
-            if (status == "cancel")
-            {
+        public async Task<bool> UpdateOrderStatusById(string orderCode, string status) {
+            if (status == "cancel") {
                 return await CancelOrderById(orderCode);
             }
             var requestData = new StringContent(JsonSerializer.Serialize(new
@@ -188,8 +170,7 @@ namespace Group2_SE1814_NET.Proxy
             }), Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await _client.PostAsync("https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/update", requestData);
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
+            if (response.StatusCode == HttpStatusCode.OK) {
                 string result = await response.Content.ReadAsStringAsync();
                 JsonElement doc = JsonDocument.Parse(result).RootElement;
                 return doc.GetProperty("code").GetString() == "200";
@@ -200,94 +181,71 @@ namespace Group2_SE1814_NET.Proxy
         //shipping fee
 
         // Lấy danh sách tỉnh/thành phố
-        public async Task<JObject> GetProvincesAsync()
-        {
-            try
-            {
+        public async Task<JObject> GetProvincesAsync() {
+            try {
                 var response = await _client.GetAsync($"https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province");
                 response.EnsureSuccessStatusCode();//200
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JObject.Parse(jsonString);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Console.WriteLine($"Error getting provinces: {ex.Message}");
                 return new JObject(); // Trả về object rỗng nếu lỗi
             }
         }
-        public async Task<string> GetProvinceName(int provinceId)
-        {
-            try
-            {
+        public async Task<string> GetProvinceName(int provinceId) {
+            try {
                 var response = await _client.GetAsync("https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province");
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     var provinces = await response.Content.ReadFromJsonAsync<ProvinceResponse>();
                     return provinces?.Data.FirstOrDefault(p => p.ProvinceID == provinceId)?.ProvinceName ?? "Unknown Province";
                 }
                 return "Unknown Province";
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 // Log lỗi nếu cần
                 Console.WriteLine($"Error fetching province name: {ex.Message}");
                 return "Unknown Province";
             }
         }
         // Lấy danh sách quận/huyện theo ProvinceID
-        public async Task<JObject> GetDistrictsAsync(int provinceId)
-        {
-            try
-            {
+        public async Task<JObject> GetDistrictsAsync(int provinceId) {
+            try {
                 var response = await _client.GetAsync($"https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id={provinceId}");
                 response.EnsureSuccessStatusCode();
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JObject.Parse(jsonString);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Console.WriteLine($"Error getting districts: {ex.Message}");
                 return new JObject(); // Trả về object rỗng nếu lỗi
             }
         }
 
         // Lấy danh sách phường/xã theo DistrictID
-        public async Task<JObject> GetWardsAsync(int districtId)
-        {
-            try
-            {
+        public async Task<JObject> GetWardsAsync(int districtId) {
+            try {
                 var response = await _client.GetAsync($"https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id={districtId}");
                 response.EnsureSuccessStatusCode();
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JObject.Parse(jsonString);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Console.WriteLine($"Error getting wards: {ex.Message}");
                 return new JObject(); // Trả về object rỗng nếu lỗi
             }
         }
 
-        public async Task<JObject> GetShopsAsync()
-        {
-            try
-            {
+        public async Task<JObject> GetShopsAsync() {
+            try {
                 var response = await _client.GetAsync($"https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shop/all");
                 response.EnsureSuccessStatusCode();
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JObject.Parse(jsonString);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Console.WriteLine($"Error getting shops: {ex.Message}");
                 return new JObject(); // Trả về object rỗng nếu lỗi
             }
         }
 
-        public async Task<JObject> GetAvailableServicesAsync(int shopId, int fromDistrictId, int toDistrictId)
-        {
-            try
-            {
+        public async Task<JObject> GetAvailableServicesAsync(int shopId, int fromDistrictId, int toDistrictId) {
+            try {
                 var requestData = new
                 {
                     shop_id = shopId,
@@ -300,18 +258,14 @@ namespace Group2_SE1814_NET.Proxy
                 response.EnsureSuccessStatusCode();
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JObject.Parse(jsonString);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Console.WriteLine($"Error getting available services: {ex.Message}");
                 return new JObject();
             }
         }
 
-        public async Task<JObject> GetShippingFeeAsync(int shopId, int fromDistrictId, string toWardCode, int toDistrictId, int serviceId)
-        {
-            try
-            {
+        public async Task<JObject> GetShippingFeeAsync(int shopId, int fromDistrictId, string toWardCode, int toDistrictId, int serviceId) {
+            try {
                 // Fake data cho weight và items
                 var requestData = new
                 {
@@ -341,9 +295,7 @@ namespace Group2_SE1814_NET.Proxy
                 response.EnsureSuccessStatusCode();
                 var jsonString = await response.Content.ReadAsStringAsync();
                 return JObject.Parse(jsonString);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Console.WriteLine($"Error getting shipping fee: {ex.Message}");
                 return new JObject();
             }
@@ -353,10 +305,8 @@ namespace Group2_SE1814_NET.Proxy
         private const string Token = "fa19bc40-fc2a-11ef-82e7-a688a46b55a3";
 
         public static async Task<string> CreateOrder(string ito_name, string ito_phone, string ito_address,
-            string ito_ward_name, string ito_district_name, string ito_province_name, int iservice_type_id, double icod_amount, List<Item> items)
-        {
-            using (var client = new HttpClient())
-            {
+            string ito_ward_name, string ito_district_name, string ito_province_name, int iservice_type_id, double icod_amount, List<Item> items) {
+            using (var client = new HttpClient()) {
                 client.DefaultRequestHeaders.Add("ShopId", ShopId);
                 client.DefaultRequestHeaders.Add("Token", Token);
 
@@ -408,8 +358,7 @@ namespace Group2_SE1814_NET.Proxy
             }
         }
         public static async Task<string> GetTrackingCode(string ito_name, string ito_phone, string ito_address,
-    string ito_ward_name, string ito_district_name, string ito_province_name, int iservice_type_id, double icod_amount, List<Item> items)
-        {
+    string ito_ward_name, string ito_district_name, string ito_province_name, int iservice_type_id, double icod_amount, List<Item> items) {
             // First, call the CreateOrder method to get the response
             string responseJson = await CreateOrder(ito_name, ito_phone, ito_address,
                 ito_ward_name, ito_district_name, ito_province_name, iservice_type_id, icod_amount, items);
@@ -419,12 +368,10 @@ namespace Group2_SE1814_NET.Proxy
             JsonElement root = doc.RootElement;
 
             // Check if the API call was successful
-            if (root.TryGetProperty("code", out JsonElement codeElement) && codeElement.GetInt32() == 200)
-            {
+            if (root.TryGetProperty("code", out JsonElement codeElement) && codeElement.GetInt32() == 200) {
                 // Extract the order code (tracking number)
                 if (root.TryGetProperty("data", out JsonElement dataElement) &&
-                    dataElement.TryGetProperty("order_code", out JsonElement orderCodeElement))
-                {
+                    dataElement.TryGetProperty("order_code", out JsonElement orderCodeElement)) {
                     return orderCodeElement.GetString();
                 }
             }

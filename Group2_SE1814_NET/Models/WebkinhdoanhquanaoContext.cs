@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Group2_SE1814_NET.Models;
 
-public partial class WebkinhdoanhquanaoContext : DbContext
-{
-    public WebkinhdoanhquanaoContext()
-    {
+public partial class WebkinhdoanhquanaoContext : DbContext {
+    public WebkinhdoanhquanaoContext() {
     }
 
     public WebkinhdoanhquanaoContext(DbContextOptions<WebkinhdoanhquanaoContext> options)
-        : base(options)
-    {
+        : base(options) {
     }
 
     public virtual DbSet<Brand> Brands { get; set; }
@@ -43,8 +38,7 @@ public partial class WebkinhdoanhquanaoContext : DbContext
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<Brand>(entity =>
         {
             entity.ToTable("Brand");

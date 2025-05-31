@@ -37,4 +37,8 @@
     <Folder Include="Areas\Saler\Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\img\logo.png" />
+  </ItemGroup>
+
 </Project>

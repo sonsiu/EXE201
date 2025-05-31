@@ -1,59 +1,46 @@
 ﻿using Group2_SE1814_NET.Extensions;
-using Group2_SE1814_NET.Libraries;
 using Group2_SE1814_NET.Models;
 using Group2_SE1814_NET.Proxy;
-using Group2_SE1814_NET.Repositories;
 using Group2_SE1814_NET.Services;
 using Group2_SE1814_NET.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
 
-namespace Group2_SE1814_NET.Controllers
-{
-    public class CartController : Controller
-    {
+namespace Group2_SE1814_NET.Controllers {
+    public class CartController : Controller {
         private readonly IProductService _productService;
         private readonly IOrderService _orderService;
         private readonly IGHNService _ghnService;
         private readonly IVnPayService _vnPayService;
         private readonly IPayosService _payosService;
 
-        public CartController(IProductService productService, IOrderService orderService, IGHNService ghnService, IVnPayService vnPayService, IPayosService payOSService)
-        {
+        public CartController(IProductService productService, IOrderService orderService, IGHNService ghnService, IVnPayService vnPayService, IPayosService payOSService) {
             _productService = productService;
             _orderService = orderService;
             _ghnService = ghnService;
             _vnPayService = vnPayService;
             _payosService = payOSService;
         }
-        public IActionResult Index()
-        {
+        public IActionResult Index() {
             var shoppingCart = HttpContext.Session.GetObjectFromSession<List<Item>>("cart") ?? new List<Item>();
             return View(shoppingCart);
         }
 
-        public IActionResult Add(int id = 0)
-        {
+        public IActionResult Add(int id = 0) {
             var p = _productService.GetProductById(id);
             List<Item> cart = HttpContext.Session.GetObjectFromSession<List<Item>>("cart");
             if (cart == null) //chua có sp trong giỏ
             {
                 cart = new List<Item>();  ///tao new list
 				cart.Add(new Item { Product = p, Quantity = 1 }); //them sp chưa có vào giỏ
-            }
-            else //có sp trong giỏ
-            {
+            } else //có sp trong giỏ
+              {
                 Item existingItem = cart.FirstOrDefault(i => i.Product.Id == id);
                 if (existingItem != null) // Nếu sản phẩm id{?} đã có trong giỏ hàng
                 {
-                    if (existingItem.Quantity < existingItem.Product.Quantity)
-                    {
+                    if (existingItem.Quantity < existingItem.Product.Quantity) {
                         existingItem.Quantity += 1; // Tăng số lượng sản phẩm lên
                     }
-                }
-                else
-                {
+                } else {
                     cart.Add(new Item { Product = p, Quantity = 1 }); //them sp thuôc id ? chưa có vào giỏ
                 }
             }
@@ -61,23 +48,18 @@ namespace Group2_SE1814_NET.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Sub(int id = 0)
-        {
+        public IActionResult Sub(int id = 0) {
             List<Item> cart = HttpContext.Session.GetObjectFromSession<List<Item>>("cart");
             Item existingItem = cart.FirstOrDefault(i => i.Product.Id == id);
-            if (existingItem.Quantity > 1)
-            {
+            if (existingItem.Quantity > 1) {
                 existingItem.Quantity -= 1; // Giam số lượng sản phẩm lên
-            }
-            else
-            {
+            } else {
                 cart.Remove(existingItem);
             }
             HttpContext.Session.SetObjectAsSession("cart", cart);
             return RedirectToAction("Index");
         }
-        public IActionResult Remove(int id = 0)
-        {
+        public IActionResult Remove(int id = 0) {
             List<Item> cart = HttpContext.Session.GetObjectFromSession<List<Item>>("cart");
             Item existingItem = cart.FirstOrDefault(i => i.Product.Id == id);
             cart.Remove(existingItem);
@@ -86,15 +68,13 @@ namespace Group2_SE1814_NET.Controllers
         }
 
         [HttpGet]
-        public IActionResult Checkout()
-        {
+        public IActionResult Checkout() {
             var shoppingCart = HttpContext.Session.GetObjectFromSession<List<Item>>("cart") ?? new List<Item>();
             // Calculate the total price of items in the cart
             var total = shoppingCart.Sum(x => x.Quantity * x.Product.Price);
 
             // Check if the total is 0
-            if (total == 0)
-            {
+            if (total == 0) {
                 // If total is 0, redirect to Cart page
                 return RedirectToAction("Index", "Cart");
             }
@@ -103,17 +83,13 @@ namespace Group2_SE1814_NET.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checkout(OrderViewModel orderView)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Checkout(OrderViewModel orderView) {
+            if (ModelState.IsValid) {
                 User u = HttpContext.Session.GetObjectFromSession<User>("user");
 
-                if (u != null)
-                {
+                if (u != null) {
                     List<Item> cart = HttpContext.Session.GetObjectFromSession<List<Item>>("cart");
-                    if (cart == null || !cart.Any())
-                    {
+                    if (cart == null || !cart.Any()) {
                         TempData["ErrorMessage"] = "Your cart is empty!";
                         return RedirectToAction("Index");
                     }
@@ -137,13 +113,12 @@ namespace Group2_SE1814_NET.Controllers
                     order.WardName = orderView.WardName;
                     order.ShopId = orderView.ShopId;
                     order.ServiceTypeId = orderView.ServiceTypeId;
-                    
+
 
 
 
                     // Xử lý điều hướng theo phương thức thanh toán
-                    switch (orderView.PaymentMethod)
-                    {
+                    switch (orderView.PaymentMethod) {
                         case "COD":
                             string code = await GHNService.GetTrackingCode(orderView.Name, orderView.Phone
                             , orderView.StreetAddress, orderView.WardName, orderView.DistrictName,
@@ -179,37 +154,29 @@ namespace Group2_SE1814_NET.Controllers
                             TempData["ErrorMessage"] = "Invalid payment method!";
                             return RedirectToAction("Checkout");
                     }
-                }
-                else
-                {
+                } else {
                     return RedirectToAction("Login", "Auth");
                 }
-            }
-            else
-            {
+            } else {
                 TempData["ErrorMessage"] = "Order failed! Please check your information.";
                 return RedirectToAction("Checkout");
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> CheckoutWithCOD(int orderId)
-        {
+        public async Task<IActionResult> CheckoutWithCOD(int orderId) {
             var order = _orderService.GetById(orderId);
 
             return View(order);
         }
 
-        public double ConvertUsdToVnd(double codAmountUsd, double exchangeRate = 24000)
-        {
+        public double ConvertUsdToVnd(double codAmountUsd, double exchangeRate = 24000) {
             return (double)Math.Round(codAmountUsd * exchangeRate);
         }
         [HttpGet]
-        public IActionResult CheckoutWithVNPay(int orderId)
-        {
+        public IActionResult CheckoutWithVNPay(int orderId) {
             var order = _orderService.GetById(orderId);
-            if (order == null)
-            {
+            if (order == null) {
                 TempData["ErrorMessage"] = "Order not found!";
                 return RedirectToAction("Index");
             }
@@ -230,13 +197,11 @@ namespace Group2_SE1814_NET.Controllers
         }
         // Trong phương thức xử lý thanh toán VNPay
         [HttpGet]
-        public IActionResult PaymentCallbackVnpay()
-        {
+        public IActionResult PaymentCallbackVnpay() {
             var response = _vnPayService.PaymentExecute(Request.Query);
 
             // First check if the response contains a cancellation or error code
-            if (response != null && !string.IsNullOrEmpty(response.VnPayResponseCode))
-            {
+            if (response != null && !string.IsNullOrEmpty(response.VnPayResponseCode)) {
                 // Check for known cancellation/error codes
                 if (response.VnPayResponseCode == "24" || // User cancellation
                     response.VnPayResponseCode == "99" || // Common error
@@ -249,11 +214,10 @@ namespace Group2_SE1814_NET.Controllers
             }
 
             // If we get here, check if the payment was actually successful
-            if (response != null && response.Success)
-            {
+            if (response != null && response.Success) {
                 // Get orderId as you did before
                 int orderId = _orderService.GetMaxOrderId();
-                
+
 
                 TempData["ProcessedOrderId"] = orderId;
                 TempData["ErrorMessage"] = "Giao dịch không thành công.";
@@ -261,19 +225,17 @@ namespace Group2_SE1814_NET.Controllers
             }
 
             // If we get here, something else went wrong
-            
+
             return RedirectToAction("PaymentFailed");
         }
 
         [HttpGet]
-        public IActionResult PaymentSuccess()
-        {
+        public IActionResult PaymentSuccess() {
             // Không thay đổi logic của action này
             return View();
         }
         [HttpGet]
-        public IActionResult PaymentFailed()
-        {
+        public IActionResult PaymentFailed() {
             // Không thay đổi logic của action này
             return View();
         }
@@ -310,7 +272,7 @@ namespace Group2_SE1814_NET.Controllers
         }*/
 
 
-        
+
 
         /*[HttpPost]
         public async Task<IActionResult> CreateShippingOrder(string from_name, string from_phone, string from_address, string to_name, string to_phone, string to_address, string to_ward_code, int to_district_id, int cod_amount, int service_id)

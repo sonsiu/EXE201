@@ -1,19 +1,15 @@
 ﻿using Group2_SE1814_NET.Libraries;
 using Group2_SE1814_NET.ViewModels;
 
-namespace Group2_SE1814_NET.Proxy
-{
-    public class VnPayService : IVnPayService
-    {
+namespace Group2_SE1814_NET.Proxy {
+    public class VnPayService : IVnPayService {
         private readonly IConfiguration _configuration;
 
-        public VnPayService(IConfiguration configuration)
-        {
+        public VnPayService(IConfiguration configuration) {
             _configuration = configuration;
         }
 
-        public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
-        {
+        public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context) {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
@@ -40,8 +36,7 @@ namespace Group2_SE1814_NET.Proxy
         }
 
 
-        public PaymentResponseModel PaymentExecute(IQueryCollection collections)
-        {
+        public PaymentResponseModel PaymentExecute(IQueryCollection collections) {
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
 

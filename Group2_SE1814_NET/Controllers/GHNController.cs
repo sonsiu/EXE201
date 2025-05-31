@@ -2,21 +2,17 @@
 using Group2_SE1814_NET.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Group2_SE1814_NET.Controllers
-{
-    public class GHNController : Controller
-    {
+namespace Group2_SE1814_NET.Controllers {
+    public class GHNController : Controller {
         private readonly GHNService _ghnService;
 
 
-        public GHNController(GHNService ghnService)
-        {
+        public GHNController(GHNService ghnService) {
             _ghnService = ghnService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProvinces()
-        {
+        public async Task<IActionResult> GetProvinces() {
             var provincesJson = await _ghnService.GetProvincesAsync();
             var provinces = provincesJson["data"]?.ToObject<List<ProvinceModel>>() ?? new List<ProvinceModel>();
             return new JsonResult(provinces);
@@ -24,10 +20,8 @@ namespace Group2_SE1814_NET.Controllers
 
         // Lấy danh sách quận/huyện theo ProvinceID
         [HttpGet]
-        public async Task<IActionResult> GetDistricts(int provinceId)
-        {
-            if (provinceId == 0)
-            {
+        public async Task<IActionResult> GetDistricts(int provinceId) {
+            if (provinceId == 0) {
                 return BadRequest("Province ID is required.");
             }
 
@@ -38,10 +32,8 @@ namespace Group2_SE1814_NET.Controllers
 
         // Lấy danh sách phường/xã theo DistrictID
         [HttpGet]
-        public async Task<IActionResult> GetWards(int districtId)
-        {
-            if (districtId == 0)
-            {
+        public async Task<IActionResult> GetWards(int districtId) {
+            if (districtId == 0) {
                 return BadRequest("District ID is required.");
             }
 
@@ -51,8 +43,7 @@ namespace Group2_SE1814_NET.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetShops()
-        {
+        public async Task<IActionResult> GetShops() {
             var shopsJson = await _ghnService.GetShopsAsync();
             var shops = shopsJson["data"]?["shops"]?.ToObject<List<ShopModel>>() ?? new List<ShopModel>();
             return new JsonResult(shops);
@@ -60,10 +51,8 @@ namespace Group2_SE1814_NET.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAvailableServices(int shopId, int fromDistrictId, int toDistrictId)
-        {
-            if (shopId == 0 || fromDistrictId == 0 || toDistrictId == 0)
-            {
+        public async Task<IActionResult> GetAvailableServices(int shopId, int fromDistrictId, int toDistrictId) {
+            if (shopId == 0 || fromDistrictId == 0 || toDistrictId == 0) {
                 return BadRequest("Shop ID, From District ID, and To District ID are required.");
             }
 
@@ -74,10 +63,8 @@ namespace Group2_SE1814_NET.Controllers
 
         // Lấy phí vận chuyển
         [HttpGet]
-        public async Task<IActionResult> GetShippingFee(int shopId, int fromDistrictId, string toWardCode, int toDistrictId, int serviceId)
-        {
-            if (shopId == 0 || fromDistrictId == 0 || toDistrictId == 0)
-            {
+        public async Task<IActionResult> GetShippingFee(int shopId, int fromDistrictId, string toWardCode, int toDistrictId, int serviceId) {
+            if (shopId == 0 || fromDistrictId == 0 || toDistrictId == 0) {
                 return BadRequest("Shop ID, From District ID, To District ID, and To Ward Code are required.");
             }
 

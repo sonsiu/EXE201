@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Group2_SE1814_NET.Constants
-{
-    public class EmailConstants
-    {
+﻿namespace Group2_SE1814_NET.Constants {
+    public class EmailConstants {
         public const string GMAIL_REGISTER_EMAIL_SUBJECT = "Welcome to SHOPQUANAO - Google Sign-In Success!";
 
         public const string GMAIL_REGISTER_EMAIL_BODY = @"

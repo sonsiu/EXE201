@@ -1,7 +1,5 @@
-﻿namespace Group2_SE1814_NET.ViewModels
-{
-    public class PaymentResponseModel
-    {
+﻿namespace Group2_SE1814_NET.ViewModels {
+    public class PaymentResponseModel {
         public string OrderDescription { get; set; }
         public string TransactionId { get; set; }
         public int OrderId { get; set; }

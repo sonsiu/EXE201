@@ -1,11 +1,8 @@
 ﻿using Group2_SE1814_NET.Models;
 using Group2_SE1814_NET.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Group2_SE1814_NET.Repositories
-{
-    public interface IOrderRepository
-    {
+namespace Group2_SE1814_NET.Repositories {
+    public interface IOrderRepository {
         public void AddOrder(Order order, List<Item> cart);
         public List<Order> GetAll();
         public List<Order> GetByUserId(int userId);

@@ -1,7 +1,5 @@
-﻿namespace Group2_SE1814_NET.ViewModels
-{
-    public class PayOSInformationModel
-    {
+﻿namespace Group2_SE1814_NET.ViewModels {
+    public class PayOSInformationModel {
         public double Amount { get; set; }
         public string OrderDescription { get; set; }
         public string Name { get; set; }

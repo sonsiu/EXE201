@@ -1,12 +1,8 @@
 ﻿using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-namespace Group2_SE1814_NET.Extensions
-{
-    public static class SessionExtensions
-    {
+namespace Group2_SE1814_NET.Extensions {
+    public static class SessionExtensions {
         // Lưu đối tượng vào session
-        public static void SetObjectAsSession(this ISession session, string key, object value)
-        {
+        public static void SetObjectAsSession(this ISession session, string key, object value) {
             // Chuyển đổi đối tượng thành chuỗi JSON
             var jsonData = JsonSerializer.Serialize(value);
 
@@ -15,13 +11,11 @@ namespace Group2_SE1814_NET.Extensions
         }
 
         // Lấy đối tượng từ session
-        public static T GetObjectFromSession<T>(this ISession session, string key)
-        {
+        public static T GetObjectFromSession<T>(this ISession session, string key) {
             var value = session.GetString(key);
 
             // Nếu không có giá trị trong session, trả về default
-            if (value == null)
-            {
+            if (value == null) {
                 return default(T);
             }
 

@@ -5,25 +5,20 @@ using Group2_SE1814_NET.Services;
 using Group2_SE1814_NET.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Group2_SE1814_NET.Controllers
-{
-    public class OrderController : Controller
-    {
+namespace Group2_SE1814_NET.Controllers {
+    public class OrderController : Controller {
         private readonly IOrderService _orderService;
         private readonly IGHNService _ghnService;
-        public OrderController(IOrderService orderService, IGHNService ghnService)
-        {
+        public OrderController(IOrderService orderService, IGHNService ghnService) {
             _orderService = orderService;
             _ghnService = ghnService;
         }
-        public IActionResult Index()
-        {
+        public IActionResult Index() {
             User u = HttpContext.Session.GetObjectFromSession<User>("user");
             var orders = _orderService.GetByUserId(u.Id);
             return View(orders);
         }
-        public IActionResult Detail(int id = 0)
-        {
+        public IActionResult Detail(int id = 0) {
             var order = _orderService.GetById(id);
             return View(order);
         }
@@ -40,10 +35,9 @@ namespace Group2_SE1814_NET.Controllers
 
         [HttpGet]
         [Route("index")]
-        public async Task<IActionResult> GetAllOrder()
-        {
+        public async Task<IActionResult> GetAllOrder() {
             User user = Extensions.SessionExtensions.GetObjectFromSession<User>(HttpContext.Session, "user");
-            
+
             List<Order> orders = await _orderService.GetByUserID(user.Id);
             List<OrderGHNViewModel> orderGHN = await _ghnService.GetAllOrders();
             List<OrderGHNViewModel> filterOrderGHN = orderGHN.Where(x => orders.Any(y => y.OrderCode == x.OrderCode)).ToList();
@@ -53,8 +47,7 @@ namespace Group2_SE1814_NET.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Detail([FromQuery] string orderCode)
-        {
+        public async Task<IActionResult> Detail([FromQuery] string orderCode) {
             var order = await _ghnService.GetOrderDetailByOrderCode(orderCode);
             ViewBag.Order = order;
             return View("~/Views/Order/Detail.cshtml");
@@ -62,8 +55,7 @@ namespace Group2_SE1814_NET.Controllers
 
 
         [HttpPost]
-        public IActionResult CancelOrder(string orderCode)
-        {
+        public IActionResult CancelOrder(string orderCode) {
             _ghnService.CancelOrderById(orderCode);
             return RedirectToAction("GetAllOrder");
         }

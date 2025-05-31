@@ -1,25 +1,19 @@
-﻿using Microsoft.Extensions.Options;
-using System.Text.Json;
+﻿using System.Security.Cryptography;
 using System.Text;
 using Group2_SE1814_NET.ViewModels;
 using Newtonsoft.Json;
-using System.Security.Cryptography;
 
-namespace Group2_SE1814_NET.Proxy
-{
-    public class PayosService : IPayosService
-    {
+namespace Group2_SE1814_NET.Proxy {
+    public class PayosService : IPayosService {
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PayosService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
-        {
+        public PayosService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string CreatePaymentUrl(PayOSInformationModel model, HttpContext context)
-        {
+        public string CreatePaymentUrl(PayOSInformationModel model, HttpContext context) {
             var clientId = _configuration["PayOS:ClientId"];
             var apiKey = _configuration["PayOS:ApiKey"];
             var secretKey = _configuration["PayOS:SecretKey"];
@@ -32,8 +26,7 @@ namespace Group2_SE1814_NET.Proxy
 
             // Tạo URL callback
             var returnUrl = _configuration["PayOS:ReturnUrl"];
-            if (string.IsNullOrEmpty(returnUrl))
-            {
+            if (string.IsNullOrEmpty(returnUrl)) {
                 var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
                 returnUrl = $"{baseUrl}/Payment/PaymentCallback";
             }
@@ -56,14 +49,12 @@ namespace Group2_SE1814_NET.Proxy
             var signature = CreateSignature(jsonData, secretKey);
 
             // Gửi request đến PayOS API
-            using (var client = new HttpClient())
-            {
+            using (var client = new HttpClient()) {
                 client.DefaultRequestHeaders.Add("Signature", signature);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                 var response = client.PostAsync($"{apiEndpoint}/create-payment-link", content).Result;
 
-                if (response.IsSuccessStatusCode)
-                {
+                if (response.IsSuccessStatusCode) {
                     var responseData = response.Content.ReadAsStringAsync().Result;
                     var paymentResponse = JsonConvert.DeserializeObject<dynamic>(responseData);
                     return paymentResponse.paymentUrl;
@@ -73,24 +64,20 @@ namespace Group2_SE1814_NET.Proxy
             return string.Empty;
         }
 
-        public PayOSResponseModel PaymentExecute(IQueryCollection queryCollection)
-        {
+        public PayOSResponseModel PaymentExecute(IQueryCollection queryCollection) {
             var response = new PayOSResponseModel();
 
-            try
-            {
+            try {
                 var secretKey = _configuration["PayOS:SecretKey"];
 
                 // Lấy dữ liệu từ query string
                 var responseData = new Dictionary<string, string>();
-                foreach (var key in queryCollection.Keys)
-                {
+                foreach (var key in queryCollection.Keys) {
                     responseData.Add(key, queryCollection[key]);
                 }
 
                 // Kiểm tra chữ ký từ PayOS
-                if (ValidateSignature(responseData, secretKey))
-                {
+                if (ValidateSignature(responseData, secretKey)) {
                     // Xử lý dữ liệu response
                     response.Success = responseData["status"] == "00";
                     response.PayosResponseCode = responseData["status"];
@@ -98,32 +85,26 @@ namespace Group2_SE1814_NET.Proxy
                     response.ResponseData = responseData;
 
                     // Lấy orderId nếu có
-                    if (responseData.ContainsKey("orderId") && !string.IsNullOrEmpty(responseData["orderId"]))
-                    {
+                    if (responseData.ContainsKey("orderId") && !string.IsNullOrEmpty(responseData["orderId"])) {
                         int.TryParse(responseData["orderId"], out int orderId);
                         response.OrderId = orderId;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 // Log exception
             }
 
             return response;
         }
 
-        private string CreateSignature(string data, string secretKey)
-        {
-            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey)))
-            {
+        private string CreateSignature(string data, string secretKey) {
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey))) {
                 var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
                 return Convert.ToBase64String(hash);
             }
         }
 
-        private bool ValidateSignature(Dictionary<string, string> responseData, string secretKey)
-        {
+        private bool ValidateSignature(Dictionary<string, string> responseData, string secretKey) {
             // Tạo chuỗi để kiểm tra chữ ký
             var receivedSignature = responseData["signature"];
             responseData.Remove("signature");

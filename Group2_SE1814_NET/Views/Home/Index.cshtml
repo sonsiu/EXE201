@@ -3,7 +3,22 @@
     ViewData["Title"] = "Home Page";
 }
 
-<!--================ Hero banner start =================-->
+<!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="category">
+	<div class="container h-100">
+		<div class="blog-banner">
+			<div class="text-center">
+				<h1>Homepage</h1>
+				<nav aria-label="breadcrumb" class="banner-breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item active" aria-current="page">Homepage</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- ================ end banner area ================= -->
 
 <section class="section-margin calc-60px">
     <div class="container">
@@ -17,8 +32,9 @@
             <div class="col-md-6 col-lg-4 col-xl-3">
                 <div class="card text-center card-product">
                     <div class="card-product__img">
+                            <a asp-controller="Shop" asp-action="Detail" asp-route-id="@product.Id">
                             <img class="card-img" src="@product.ImageUrl" alt="@product.Name" style="height:260px">
-
+                            </a>
                         <ul class="card-product__imgOverlay">
                             <li><button><i class="ti-search"></i></button></li>
                                 @if (product.Quantity > 0)

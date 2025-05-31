@@ -1,42 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Group2_SE1814_NET.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Group2_SE1814_NET.Models;
 
-namespace Group2_SE1814_NET.Areas.Admin.Controllers
-{
+namespace Group2_SE1814_NET.Areas.Admin.Controllers {
     [Area("Admin")]
-    public class BrandController : Controller
-    {
+    public class BrandController : Controller {
         private readonly WebkinhdoanhquanaoContext _context;
 
-        public BrandController(WebkinhdoanhquanaoContext context)
-        {
+        public BrandController(WebkinhdoanhquanaoContext context) {
             _context = context;
         }
 
         // GET: Admin/Brand
-        public async Task<IActionResult> Index()
-        {
+        public async Task<IActionResult> Index() {
             return View(await _context.Brands.ToListAsync());
         }
 
         // GET: Admin/Brand/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Details(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var brand = await _context.Brands
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (brand == null)
-            {
+            if (brand == null) {
                 return NotFound();
             }
 
@@ -44,8 +32,7 @@ namespace Group2_SE1814_NET.Areas.Admin.Controllers
         }
 
         // GET: Admin/Brand/Create
-        public IActionResult Create()
-        {
+        public IActionResult Create() {
             return View();
         }
 
@@ -54,10 +41,8 @@ namespace Group2_SE1814_NET.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Brand brand)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Create([Bind("Id,Name")] Brand brand) {
+            if (ModelState.IsValid) {
                 _context.Add(brand);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -66,16 +51,13 @@ namespace Group2_SE1814_NET.Areas.Admin.Controllers
         }
 
         // GET: Admin/Brand/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var brand = await _context.Brands.FindAsync(id);
-            if (brand == null)
-            {
+            if (brand == null) {
                 return NotFound();
             }
             return View(brand);
@@ -86,28 +68,19 @@ namespace Group2_SE1814_NET.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id,Name")] Brand brand)
-        {
-            if (id != brand.Id)
-            {
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,Name")] Brand brand) {
+            if (id != brand.Id) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(brand);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BrandExists(brand.Id))
-                    {
+                } catch (DbUpdateConcurrencyException) {
+                    if (!BrandExists(brand.Id)) {
                         return NotFound();
-                    }
-                    else
-                    {
+                    } else {
                         throw;
                     }
                 }
@@ -117,17 +90,14 @@ namespace Group2_SE1814_NET.Areas.Admin.Controllers
         }
 
         // GET: Admin/Brand/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Delete(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var brand = await _context.Brands
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (brand == null)
-            {
+            if (brand == null) {
                 return NotFound();
             }
 
@@ -137,28 +107,22 @@ namespace Group2_SE1814_NET.Areas.Admin.Controllers
         // POST: Admin/Brand/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
-        {
-            try
-            {
+        public async Task<IActionResult> DeleteConfirmed(int? id) {
+            try {
                 var brand = await _context.Brands.FindAsync(id);
-                if (brand != null)
-                {
+                if (brand != null) {
                     _context.Brands.Remove(brand);
                 }
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 TempData["ErrorMessage"] = "Delete failed because it is in use";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        private bool BrandExists(int? id)
-        {
+        private bool BrandExists(int? id) {
             return _context.Brands.Any(e => e.Id == id);
         }
     }

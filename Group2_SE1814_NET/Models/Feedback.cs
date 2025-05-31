@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Group2_SE1814_NET.Models;
 
-namespace Group2_SE1814_NET.Models;
-
-public partial class Feedback
-{
+public partial class Feedback {
     public int Id { get; set; }
 
     public int? UserId { get; set; }

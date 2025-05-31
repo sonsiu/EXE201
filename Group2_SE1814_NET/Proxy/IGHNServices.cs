@@ -1,10 +1,8 @@
 ﻿using Group2_SE1814_NET.ViewModels;
 using Newtonsoft.Json.Linq;
 
-namespace Group2_SE1814_NET.Proxy
-{
-    public interface IGHNService
-    {
+namespace Group2_SE1814_NET.Proxy {
+    public interface IGHNService {
         Task<OrderGHNViewModel> GetOrderDetailByOrderCode(string orderCode);
 
         Task<List<OrderGHNViewModel>> GetAllOrders();
@@ -21,7 +19,7 @@ namespace Group2_SE1814_NET.Proxy
         public Task<JObject> GetAvailableServicesAsync(int shopId, int fromDistrictId, int toDistrictId);
         public Task<JObject> GetShippingFeeAsync(int shopId, int fromDistrictId, string toWardCode, int toDistrictId, int serviceId);
 
-   
+
         Task<bool> UpdateOrderStatusById(string orderCode, string status);
     }
 }

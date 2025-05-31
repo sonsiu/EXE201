@@ -1,23 +1,18 @@
-﻿using Group2_SE1814_NET.ViewModels;
-using System.Net.Sockets;
+﻿using System.Globalization;
 using System.Net;
-using System.Globalization;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using Group2_SE1814_NET.ViewModels;
 
-namespace Group2_SE1814_NET.Libraries
-{
-    public class VnPayLibrary
-    {
+namespace Group2_SE1814_NET.Libraries {
+    public class VnPayLibrary {
         private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
-        public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
-        {
+        public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret) {
             var vnPay = new VnPayLibrary();
-            foreach (var (key, value) in collection)
-            {
-                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
-                {
+            foreach (var (key, value) in collection) {
+                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_")) {
                     vnPay.AddResponseData(key, value);
                 }
             }
@@ -46,17 +41,13 @@ namespace Group2_SE1814_NET.Libraries
                 VnPayResponseCode = vnpResponseCode
             };
         }
-        public string GetIpAddress(HttpContext context)
-        {
+        public string GetIpAddress(HttpContext context) {
             var ipAddress = string.Empty;
-            try
-            {
+            try {
                 var remoteIpAddress = context.Connection.RemoteIpAddress;
 
-                if (remoteIpAddress != null)
-                {
-                    if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
-                    {
+                if (remoteIpAddress != null) {
+                    if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6) {
                         remoteIpAddress = Dns.GetHostEntry(remoteIpAddress).AddressList
                             .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
                     }
@@ -65,39 +56,30 @@ namespace Group2_SE1814_NET.Libraries
 
                     return ipAddress;
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return ex.Message;
             }
 
             return "127.0.0.1";
         }
-        public void AddRequestData(string key, string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
+        public void AddRequestData(string key, string value) {
+            if (!string.IsNullOrEmpty(value)) {
                 _requestData.Add(key, value);
             }
         }
 
-        public void AddResponseData(string key, string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
+        public void AddResponseData(string key, string value) {
+            if (!string.IsNullOrEmpty(value)) {
                 _responseData.Add(key, value);
             }
         }
-        public string GetResponseData(string key)
-        {
+        public string GetResponseData(string key) {
             return _responseData.TryGetValue(key, out var retValue) ? retValue : string.Empty;
         }
-        public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
-        {
+        public string CreateRequestUrl(string baseUrl, string vnpHashSecret) {
             var data = new StringBuilder();
 
-            foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
-            {
+            foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value))) {
                 data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
             }
 
@@ -105,8 +87,7 @@ namespace Group2_SE1814_NET.Libraries
 
             baseUrl += "?" + querystring;
             var signData = querystring;
-            if (signData.Length > 0)
-            {
+            if (signData.Length > 0) {
                 signData = signData.Remove(data.Length - 1, 1);
             }
 
@@ -116,22 +97,18 @@ namespace Group2_SE1814_NET.Libraries
             return baseUrl;
         }
 
-        public bool ValidateSignature(string inputHash, string secretKey)
-        {
+        public bool ValidateSignature(string inputHash, string secretKey) {
             var rspRaw = GetResponseData();
             var myChecksum = HmacSha512(secretKey, rspRaw);
             return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
         }
-        private string HmacSha512(string key, string inputData)
-        {
+        private string HmacSha512(string key, string inputData) {
             var hash = new StringBuilder();
             var keyBytes = Encoding.UTF8.GetBytes(key);
             var inputBytes = Encoding.UTF8.GetBytes(inputData);
-            using (var hmac = new HMACSHA512(keyBytes))
-            {
+            using (var hmac = new HMACSHA512(keyBytes)) {
                 var hashValue = hmac.ComputeHash(inputBytes);
-                foreach (var theByte in hashValue)
-                {
+                foreach (var theByte in hashValue) {
                     hash.Append(theByte.ToString("x2"));
                 }
             }
@@ -139,27 +116,22 @@ namespace Group2_SE1814_NET.Libraries
             return hash.ToString();
         }
 
-        private string GetResponseData()
-        {
+        private string GetResponseData() {
             var data = new StringBuilder();
-            if (_responseData.ContainsKey("vnp_SecureHashType"))
-            {
+            if (_responseData.ContainsKey("vnp_SecureHashType")) {
                 _responseData.Remove("vnp_SecureHashType");
             }
 
-            if (_responseData.ContainsKey("vnp_SecureHash"))
-            {
+            if (_responseData.ContainsKey("vnp_SecureHash")) {
                 _responseData.Remove("vnp_SecureHash");
             }
 
-            foreach (var (key, value) in _responseData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
-            {
+            foreach (var (key, value) in _responseData.Where(kv => !string.IsNullOrEmpty(kv.Value))) {
                 data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
             }
 
             //remove last '&'
-            if (data.Length > 0)
-            {
+            if (data.Length > 0) {
                 data.Remove(data.Length - 1, 1);
             }
 
@@ -167,17 +139,15 @@ namespace Group2_SE1814_NET.Libraries
         }
     }
 }
-public class VnPayCompare : IComparer<string>
-    {
-        public int Compare(string x, string y)
-        {
-            if (x == y) return 0;
-            if (x == null) return -1;
-            if (y == null) return 1;
-            var vnpCompare = CompareInfo.GetCompareInfo("en-US");
-            return vnpCompare.Compare(x, y, CompareOptions.Ordinal);
-        }
+public class VnPayCompare : IComparer<string> {
+    public int Compare(string x, string y) {
+        if (x == y) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+        var vnpCompare = CompareInfo.GetCompareInfo("en-US");
+        return vnpCompare.Compare(x, y, CompareOptions.Ordinal);
     }
+}
 
 
 

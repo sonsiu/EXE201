@@ -1,19 +1,19 @@
 ﻿using System.Security.Claims;
+using Group2_SE1814_NET.Constants;
 using Group2_SE1814_NET.Extensions;
 using Group2_SE1814_NET.Models;
+using Group2_SE1814_NET.Proxy;
 using Group2_SE1814_NET.Services;
 using Group2_SE1814_NET.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Group2_SE1814_NET.Proxy;
-using Group2_SE1814_NET.Constants;
 
 namespace Group2_SE1814_NET.Controllers {
     public class AuthController : Controller {
         private readonly IUserService _userService;
-        private readonly IEmailServices _emailService; 
+        private readonly IEmailServices _emailService;
 
         public AuthController(IUserService userService, IEmailServices emailService) {
             _userService = userService;

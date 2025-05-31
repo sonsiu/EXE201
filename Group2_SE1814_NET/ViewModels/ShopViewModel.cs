@@ -1,10 +1,8 @@
 ﻿using Group2_SE1814_NET.Models;
 using X.PagedList;
 
-namespace Group2_SE1814_NET.ViewModels
-{
-    public class ShopViewModel
-    {
+namespace Group2_SE1814_NET.ViewModels {
+    public class ShopViewModel {
         public IPagedList<Product> Products { get; set; } = default!;
         public List<Brand> Brands { get; set; }
         public List<Category> Categories { get; set; }

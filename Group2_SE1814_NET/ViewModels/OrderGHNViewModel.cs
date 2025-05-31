@@ -1,7 +1,5 @@
-﻿namespace Group2_SE1814_NET.ViewModels
-{
-    public class OrderGHNViewModel
-    {
+﻿namespace Group2_SE1814_NET.ViewModels {
+    public class OrderGHNViewModel {
         public string OrderCode { get; set; } = null!;
         public int ShopId { get; set; }
         public string ToName { get; set; } = null!;

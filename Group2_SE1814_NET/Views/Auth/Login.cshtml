@@ -4,13 +4,61 @@
 	ViewData["Title"] = "Login Page";
 }
 
-<section class="login_box_area section-margin">
-	<div class="container">
-		<div class="row">
+<style>
+	.fullscreen-center {
+		min-height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 
+	.login_form_inner {
+		max-width: 600px;
+		width: 100%;
+		padding: 50px !important;
+		font-size: 1.2rem;
+	}
+
+		.login_form_inner h3 {
+			font-size: 2rem;
+		}
+
+		.login_form_inner input {
+			height: 50px;
+			font-size: 1.1rem;
+		}
+
+		.login_form_inner button,
+		.login_form_inner a.btn {
+			font-size: 1.1rem;
+			padding: 12px;
+		}
+</style>
+
+<!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="category">
+	<div class="container h-100">
+		<div class="blog-banner">
+			<div class="text-center">
+				<h1>Login</h1>
+				<nav aria-label="breadcrumb" class="banner-breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="~/">Home</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Login</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- ================ end banner area ================= -->
+
+<section class="fullscreen-center">
+	<div class="container">
+		<div class="row justify-content-center">
 			<div class="col-lg-6">
-				<div class="login_form_inner">
-					<h3>Log in to enter</h3>
+				<div class="login_form_inner border p-4 rounded shadow">
+					<h3 class="text-center mb-4">Log in to enter</h3>
 					<form class="row login_form" asp-action="Login" method="post" id="contactForm">
 						<div class="col-md-12 form-group">
 							<input type="text" asp-for="Email" class="form-control" id="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
@@ -20,23 +68,21 @@
 							<input type="password" asp-for="Password" class="form-control" id="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
 							<span asp-validation-for="Password" class="text-danger"></span>
 						</div>
-						@* <div class="col-md-12 form-group">
-							<div class="creat_account">
-								<input type="checkbox" id="f-option2" name="selector">
-								<label for="f-option2">Keep me logged in</label>
-							</div>
-						</div> *@
 						<div class="col-md-12 form-group">
-							<button type="submit" value="submit" class="button button-login w-100">Log In</button>
-							@* <a href="#">Forgot Password?</a> *@
+							<button type="submit" class="btn btn-primary w-100">Log In</button>
 						</div>
-						<div>
-							Or login with: 
+						<div class="col-md-12 text-center mb-2">
+							Or login with:
 						</div>
-						<div>
-							<a href="@Url.Action("LoginWithGoogle", "Auth")" class="btn btn-danger">
-								<i class="fab fa-google"></i> Google
+						<div class="col-md-12 text-center">
+							<a href="@Url.Action("LoginWithGoogle", "Auth")" class="btn btn-danger w-100 d-flex justify-content-center align-items-center">
+								<i class="fab fa-google me-2"></i> 
 							</a>
+						</div>
+
+						<div class="col-md-12 text-center mt-3" style="font-size: 0.7rem;">
+							Don't have an account?
+							<a href="@Url.Action("Register", "Auth")">Sign up</a>
 						</div>
 					</form>
 				</div>

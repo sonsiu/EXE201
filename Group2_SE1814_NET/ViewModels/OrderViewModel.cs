@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Group2_SE1814_NET.ViewModels
-{
-    public class OrderViewModel
-    {
+namespace Group2_SE1814_NET.ViewModels {
+    public class OrderViewModel {
         public string Name { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập số nhà và tên đường")]
         public string StreetAddress { get; set; } // Số nhà + tên đường
