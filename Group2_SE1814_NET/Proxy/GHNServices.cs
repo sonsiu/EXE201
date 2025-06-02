@@ -301,8 +301,8 @@ namespace Group2_SE1814_NET.Proxy {
             }
         }
         private const string ApiUrl = "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create";
-        private const string ShopId = "196112";
-        private const string Token = "fa19bc40-fc2a-11ef-82e7-a688a46b55a3";
+        private const string ShopId = "196748";
+        private const string Token = "9237e443-3ee8-11f0-9b81-222185cb68c8";
 
         public static async Task<string> CreateOrder(string ito_name, string ito_phone, string ito_address,
             string ito_ward_name, string ito_district_name, string ito_province_name, int iservice_type_id, double icod_amount, List<Item> items) {
@@ -354,7 +354,14 @@ namespace Group2_SE1814_NET.Proxy {
                 var jsonContent = new StringContent(JsonSerializer.Serialize(orderData), Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync(ApiUrl, jsonContent);
-                return await response.Content.ReadAsStringAsync();
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"GHN API call failed: {response.StatusCode} - {responseBody}");
+                }
+
+                return responseBody;
             }
         }
         public static async Task<string> GetTrackingCode(string ito_name, string ito_phone, string ito_address,

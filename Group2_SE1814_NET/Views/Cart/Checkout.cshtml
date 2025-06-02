@@ -47,10 +47,11 @@
                             </div>
 
                             <!-- Số điện thoại -->
-                            <div class="form-group mb-3">
-                                <label for="phone" class="form-label">Số điện thoại:</label>
-                                <input type="text" class="form-control" id="phone" name="Phone" required placeholder="Nhập số điện thoại" />
-                            </div>
+                            <input type="tel" class="form-control" id="phone" name="Phone"
+                                   required placeholder="Nhập số điện thoại"
+                                   pattern="^(0|\+84)(\d{9})$"
+                                   title="Vui lòng nhập số điện thoại hợp lệ (ví dụ: 0912345678 hoặc +84912345678)" />
+
 
                             <!-- Chọn tỉnh/thành phố -->
                             <div class="form-group mb-3">
