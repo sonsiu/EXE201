@@ -8,7 +8,12 @@
 			<div class="col-lg-6">
 				<div class="owl-carousel owl-theme s_Product_carousel">
 					<div class="single-prd-item">
-						<img class="img-fluid" src="~/@Model.ImageUrl" alt="@Model.Name">
+						@if (@Model.ImageUrl.Contains("http")) {
+							<img class="img-fluid" src="@Model.ImageUrl" alt="@Model.Name">
+						} else
+						{
+							<img class="img-fluid" src="~/@Model.ImageUrl" alt="@Model.Name">
+						}
 					</div>
 				</div>
 			</div>
